@@ -16,7 +16,7 @@ my $build = Module::Build->new(
     "MooseX::AttributeHelpers" => '0.21',
     "TryCatch" => '1.001001',
     "Throwable" => '0.092000',
-    "POEx::PubSub" => '0.092440',
+    "POEx::PubSub" => '0.092460',
     "Data::UUID" => '1.202',
   },
   script_files => [ qw() ],

@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092460';
+our $VERSION = '0.092461';
 
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -124,7 +124,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092460
+version 0.092461
 
 =head1 ATTRIBUTES
 

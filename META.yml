@@ -11,9 +11,9 @@ name: POEx-WorkerPool
 requires:
   Data::UUID: 1.202
   MooseX::AttributeHelpers: 0.21
-  POEx::PubSub: 0.092440
+  POEx::PubSub: 0.092460
   Throwable: 0.092000
   TryCatch: 1.001001
 resources:
   repository: git://github.com/nperez/pcps.git
-version: 0.092460
+version: 0.092461
