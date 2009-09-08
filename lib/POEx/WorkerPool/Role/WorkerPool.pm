@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092461';
+our $VERSION = '0.092510';
 
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -49,6 +49,13 @@ role POEx::WorkerPool::Role::WorkerPool
         }
 
         return $workers;
+    }
+
+    method BUILDARGS (ClassName $class: @args)
+    {
+        my %retargs = @args;
+        Class::MOP::load_class($retargs{job_class});
+        return \%retargs;
     }
 
 
@@ -124,7 +131,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092461
+version 0.092510
 
 =head1 ATTRIBUTES
 
