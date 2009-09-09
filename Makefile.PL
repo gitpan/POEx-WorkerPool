@@ -9,7 +9,7 @@ WriteMakefile(
   NAME      => 'POEx::WorkerPool',
   AUTHOR    => 'Nicholas\ Perez\ \<nperez\@cpan\.org\>',
   ABSTRACT  => 'A\ second\ generation\ publish\/subscribe\ component\ for\ the\ POE\ framework',
-  VERSION   => '0.092510',
+  VERSION   => '0.092520',
   EXE_FILES => [ qw() ],
   (eval { ExtUtils::MakeMaker->VERSION(6.31) } ? (LICENSE => 'perl') : ()),
   PREREQ_PM    => {

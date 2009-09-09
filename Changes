@@ -1,4 +1,7 @@
-Revision history for POEx-WorkerPool: 0.092510
+Revision history for POEx-WorkerPool: 0.092520
+
+0.092520  2009-09-09 06:39:15 UTC
+        Provide the mechanism to say what the max number of jobs a worker queue can have
 
 0.092510  2009-09-08 20:41:58 UTC
         Update PubSub dep so we make sure we have the right POE version

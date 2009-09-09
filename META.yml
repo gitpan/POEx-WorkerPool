@@ -16,4 +16,4 @@ requires:
   TryCatch: 1.001001
 resources:
   repository: git://github.com/nperez/pcps.git
-version: 0.092510
+version: 0.092520

@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Error::StartError;
-our $VERSION = '0.092510';
+our $VERSION = '0.092520';
 
 
 #ABSTRACT: An error class indicating the Worker queue failed to start
@@ -23,7 +23,7 @@ POEx::WorkerPool::Error::StartError - An error class indicating the Worker queue
 
 =head1 VERSION
 
-version 0.092510
+version 0.092520
 
 =head1 AUTHOR
 

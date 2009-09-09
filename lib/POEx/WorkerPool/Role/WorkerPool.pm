@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092510';
+our $VERSION = '0.092520';
 
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -45,11 +45,22 @@ role POEx::WorkerPool::Role::WorkerPool
 
         for(0..$self->max_workers)
         {
-            push( @$workers, Worker->new( job_class => $self->job_class ) );
+            push
+            (
+                @$workers, 
+                Worker->new
+                (
+                    job_class => $self->job_class,
+                    max_jobs => $self->max_jobs_per_worker,
+                ) 
+            );
         }
 
         return $workers;
     }
+
+
+    has max_jobs_per_worker => ( is => 'ro', isa => Int, default => 5 );
 
     method BUILDARGS (ClassName $class: @args)
     {
@@ -131,7 +142,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092510
+version 0.092520
 
 =head1 ATTRIBUTES
 
@@ -166,6 +177,12 @@ This stores the current index into workers. Dereference to manipulate the Int va
 =head2 workers is: ro, isa: ArrayRef[Worker]
 
 This attribute holds all of the workers in the pool
+
+
+
+=head2 max_jobs_per_worker is: ro, isa: Int, default: 5
+
+This attribute let's the workers know how many jobs their queue can hold
 
 
 
