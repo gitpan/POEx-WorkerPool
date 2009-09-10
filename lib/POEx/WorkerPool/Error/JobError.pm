@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Error::JobError;
-our $VERSION = '0.092520';
+our $VERSION = '0.092530';
 
 
 #ABSTRACT: An error class indicating something failed with the job
@@ -29,7 +29,7 @@ POEx::WorkerPool::Error::JobError - An error class indicating something failed w
 
 =head1 VERSION
 
-version 0.092520
+version 0.092530
 
 =head1 DESCRIPTION
 
