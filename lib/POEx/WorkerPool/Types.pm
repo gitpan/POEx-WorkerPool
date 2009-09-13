@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Types;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 use warnings;
@@ -22,6 +22,7 @@ use MooseX::Types -declare =>
     'WorkerEvent',
     'JobStatus',
     'JobStep',
+    'IsaError',
 ];
 
 
@@ -62,6 +63,7 @@ subtype WorkerEvent,
             +PXWP_JOB_FAILED,
             +PXWP_JOB_START,
             +PXWP_JOB_COMPLETE,
+            +PXWP_WORKER_ERROR,
         ]
     );
 
@@ -88,6 +90,10 @@ subtype JobStatus,
 subtype JobStep,
     as Tuple[CodeRef, ArrayRef];
 
+
+subtype IsaError,
+    as class_type('POEx::WorkerPool::Error');
+
 1;
 
 
@@ -100,7 +106,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 DESCRIPTION
 
@@ -163,6 +169,12 @@ percent_complete is only valid when type is +PXWP_JOB_PROGRESS
 When constructing Jobs, each step must match a Tuple[CodeRef, ArrayRef] where
 the code ref is the actual thing to execute and the array ref is the collection
 of arguments to be passed to the code ref verbatim.
+
+
+
+=head2 IsaError
+
+This is a convenience constraint that checks if the object inherits from Error
 
 
 

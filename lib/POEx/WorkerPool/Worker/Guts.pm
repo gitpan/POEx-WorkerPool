@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Worker::Guts;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: A generic sub process implementation for Worker
@@ -35,7 +35,7 @@ POEx::WorkerPool::Worker::Guts - A generic sub process implementation for Worker
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 DESCRIPTION
 

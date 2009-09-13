@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: A role that provides common semantics for Worker guts
@@ -51,21 +51,18 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
 
     method init_job(DoesJob $job, WheelID $wheel) is Event
     {
-        my $fail;
         try
         {
             $job->init_job();
+            $self->current_job($job);
+            $self->yield('send_message', { ID => $job->ID, type => +PXWP_JOB_START, msg => \time() });
+            $self->yield('process_job', $job);
+            return $job;
         }
         catch($err)
         {
             $self->call($self, 'send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err, } );
-            $fail = 1;
         }
-        
-        return if defined($fail);
-        $self->current_job($job);
-        $self->yield('send_message', { ID => $job->ID, type => +PXWP_JOB_START, msg => \time() });
-        $self->yield('process_job', $job);
     }
 
 
@@ -74,20 +71,23 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
         try
         {
             my $status = $job->execute_step();
+            die "No Status" if not is_JobStatus($status);
             $self->yield('send_message', $status);
+            
+            if($job->count_steps > 0)
+            {
+                $self->yield('process_job', $job);
+            }
+
+            return $status;
         }
         catch(JobError $err)
         {
-            $self->yield('send_message', $err->job_status);
+            $self->call($self, 'send_message', $err->job_status);
         }
         catch($err)
         {
-            $self->yield('send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err, } );
-        }
-        
-        if($job->count_steps > 0)
-        {
-            $self->yield('process_job', $job);
+            $self->call($self, 'send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err } );
         }
     }
 
@@ -105,7 +105,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
 
     method die_signal(Str $signal, HashRef $stuff) is Event
     {
-        $self->call($self, 'send_message', { ID => $self->current_job->ID, type => +PXWP_WORKER_CHILD_ERROR, msg => $stuff, });
+        $self->call($self, 'send_message', { ID => $self->current_job->ID, type => +PXWP_WORKER_INTERNAL_ERROR, msg => $stuff });
     }
 }
 
@@ -121,7 +121,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 METHODS
 

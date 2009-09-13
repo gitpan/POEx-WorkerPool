@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::Job;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: Provides a role for common job semantics
@@ -57,32 +57,22 @@ role POEx::WorkerPool::Role::Job
         return (${$self->total_steps} > 1);
     }
 
+
     method execute_step returns (JobStatus)
     {
-        my $status;
-
         if($self->count_steps <= 0)
         {
-            $status =
-            {
-                type => +PXWP_JOB_FAILED,
-                ID => $self->ID,
-                msg => \'Malformed job. No steps',
-            };
-
-            return $status;
+            return { type => +PXWP_JOB_FAILED, ID => $self->ID, msg => \'Malformed job. No steps' };
         }
         
-
-        my $step = $self->dequeue_step();
-        my $val;
-
         try
         {
-            $val = $step->[0]->(@{$step->[1]});
+            my $step = $self->dequeue_step();
+            my $val = $step->[0]->(@{$step->[1]});
+
             if($self->count_steps > 0)
             {
-                $status =
+                return
                 {
                     type => +PXWP_JOB_PROGRESS,
                     ID => $self->ID,
@@ -92,7 +82,7 @@ role POEx::WorkerPool::Role::Job
             }
             else
             {
-                $status =
+                return
                 {
                     type => +PXWP_JOB_COMPLETE,
                     ID => $self->ID,
@@ -102,15 +92,15 @@ role POEx::WorkerPool::Role::Job
         }
         catch ($error)
         {
-            $status =
+            my $status =
             {
                 type => +PXWP_JOB_FAILED,
                 ID => $self->ID,
                 msg => \$error
             };
-        }
 
-        return $status;
+            JobError->throw({ message => $error, job => $self, job_status => $status });
+        }
     }
 }
 
@@ -126,7 +116,7 @@ POEx::WorkerPool::Role::Job - Provides a role for common job semantics
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 SYNOPSIS
 
@@ -190,7 +180,8 @@ A simple convenience method to check if the job has multiple steps
 =head2 execute_step returns (JobStatus)
 
 execute_step dequeues a step from steps and executes it, building a proper 
-JobStatus return value. 
+JobStatus return value. If executing the step produces an exception, the
+exception class is JobError
 
 
 

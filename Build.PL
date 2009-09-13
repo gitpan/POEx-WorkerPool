@@ -14,7 +14,7 @@ my $build = Module::Build->new(
   ],
   requires      => {
     "MooseX::AttributeHelpers" => '0.21',
-    "TryCatch" => '1.001001',
+    "TryCatch" => '1.002000',
     "Throwable" => '0.092000',
     "POEx::PubSub" => '0.092460',
     "Data::UUID" => '1.202',

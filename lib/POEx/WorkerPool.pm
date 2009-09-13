@@ -1,5 +1,5 @@
 package POEx::WorkerPool;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: A generic multiprocess worker pool for the POE framework
@@ -35,7 +35,7 @@ POEx::WorkerPool - A generic multiprocess worker pool for the POE framework
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 SYNOPSIS
 

@@ -2,7 +2,7 @@
 abstract: 'A second generation publish/subscribe component for the POE framework'
 author:
   - 'Nicholas Perez <nperez@cpan.org>'
-generated_by: 'Dist::Zilla::Plugin::MetaYAML version 1.092400'
+generated_by: 'Dist::Zilla::Plugin::MetaYAML version 1.092450'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -13,7 +13,7 @@ requires:
   MooseX::AttributeHelpers: 0.21
   POEx::PubSub: 0.092460
   Throwable: 0.092000
-  TryCatch: 1.001001
+  TryCatch: 1.002000
 resources:
-  repository: git://github.com/nperez/pcps.git
-version: 0.092530
+  repository: git://github.com/nperez/pxwp.git
+version: 0.092560

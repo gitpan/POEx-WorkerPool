@@ -21,6 +21,7 @@ lib/POEx/WorkerPool/Worker/Guts.pm
 lib/POEx/WorkerPool/WorkerEvents.pm
 t/00-load.t
 t/01-basic.t
+t/lib/FailJob.pm
 t/lib/MyJob.pm
 t/release-pod-coverage.t
 t/release-pod-syntax.t

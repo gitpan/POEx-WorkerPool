@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -20,7 +20,7 @@ role POEx::WorkerPool::Role::WorkerPool
     use aliased 'POEx::WorkerPool::Error::NoAvailableWorkers';
 
 
-    has job_class => ( is => 'ro', isa => ClassName, required => 1);
+    has job_classes => ( is => 'ro', isa => ArrayRef[ClassName], required => 1);
 
     has queue_type => ( is => 'ro', isa => enum([qw|round_robin fill_up|]), default => 'round_robin');
     
@@ -50,7 +50,7 @@ role POEx::WorkerPool::Role::WorkerPool
                 @$workers, 
                 Worker->new
                 (
-                    job_class => $self->job_class,
+                    job_classes => $self->job_classes,
                     max_jobs => $self->max_jobs_per_worker,
                 ) 
             );
@@ -65,7 +65,7 @@ role POEx::WorkerPool::Role::WorkerPool
     method BUILDARGS (ClassName $class: @args)
     {
         my %retargs = @args;
-        Class::MOP::load_class($retargs{job_class});
+        Class::MOP::load_class($_) for @{$retargs{job_classes}};
         return \%retargs;
     }
 
@@ -142,16 +142,17 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 ATTRIBUTES
 
-=head2 job_class is: ro, isa: ClassName, required: 1
+=head2 job_classes is: ro, isa: ArrayRef[ClassName], required: 1
 
 In order for the serializer on the other side of the process boundary to
-rebless jobs on the other side, it needs to make sure that class is loaded.
+rebless jobs on the other side, it needs to make sure that the classes are 
+loaded.
 
-This attribute is used to indicate which class needs to be loaded.
+This attribute is used to indicate which classes need to be loaded.
 
 
 

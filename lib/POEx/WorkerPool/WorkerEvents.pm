@@ -1,5 +1,5 @@
 package POEx::WorkerPool::WorkerEvents;
-our $VERSION = '0.092530';
+our $VERSION = '0.092560';
 
 
 #ABSTRACT: Exported event symbols for WorkerPool
@@ -22,6 +22,7 @@ use constant
     PXWP_JOB_PROGRESS           => 'PXWP_JOB_PROGRESS',
     PXWP_JOB_FAILED             => 'PXWP_JOB_FAILED',
     PXWP_JOB_START              => 'PXWP_JOB_START',
+    PXWP_WORKER_ERROR           => 'PXWP_WORKER_ERROR',
 };
 
 use Sub::Exporter -setup => 
@@ -40,6 +41,7 @@ use Sub::Exporter -setup =>
             PXWP_JOB_PROGRESS
             PXWP_JOB_FAILED
             PXWP_JOB_START
+            PXWP_WORKER_ERROR
         /
     ] 
 };
@@ -57,7 +59,7 @@ POEx::WorkerPool::WorkerEvents - Exported event symbols for WorkerPool
 
 =head1 VERSION
 
-version 0.092530
+version 0.092560
 
 =head1 DESCRIPTION
 
@@ -79,6 +81,7 @@ on signatures required for each event
     PXWP_JOB_FAILED
     PXWP_JOB_START
     PXWP_JOB_COMPLETE
+    PXWP_WORKER_ERROR
 
 
 
