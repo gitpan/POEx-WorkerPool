@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
-our $VERSION = '0.092560';
+our $VERSION = '0.092650';
 
 
 #ABSTRACT: A role that provides common semantics for Workers
@@ -367,7 +367,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
     method halt is Event
     {
-        POE::Kernel->sig_child($self->child_wheel->PID);
         $self->child_wheel->kill();
         $self->clear_alias();
     }
@@ -400,7 +399,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 0.092560
+version 0.092650
 
 =head1 ATTRIBUTES
 

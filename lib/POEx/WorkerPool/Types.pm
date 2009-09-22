@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Types;
-our $VERSION = '0.092560';
+our $VERSION = '0.092650';
 
 
 use warnings;
@@ -106,7 +106,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 0.092560
+version 0.092650
 
 =head1 DESCRIPTION
 
