@@ -1,4 +1,8 @@
-Revision history for POEx-WorkerPool: 0.092650
+Revision history for POEx-WorkerPool: 0.092720
+
+0.092720  2009-09-29 14:15:24 UTC
+        Abstract the loading of the Guts out to GutsLoader
+            to allow customization
 
 0.092650  2009-09-22 21:52:57 UTC
         Address child reaping so that things get cleaned up appropriately

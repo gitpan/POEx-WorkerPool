@@ -1,5 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
-our $VERSION = '0.092650';
+our $VERSION = '0.092720';
+
 
 
 #ABSTRACT: A role that provides common semantics for Workers
@@ -9,7 +10,8 @@ use MooseX::Declare;
 role POEx::WorkerPool::Role::WorkerPool::Worker
 {
     with 'POEx::Role::SessionInstantiation';
-  
+
+    use MooseX::Types;
     use MooseX::Types::Moose(':all');
     use MooseX::Types::Structured(':all');
     use POEx::Types(':all');
@@ -21,13 +23,14 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     use POE::Filter::Reference;
     use POE::Wheel::Run;
 
-    use POEx::WorkerPool::Worker::Guts;
+    use POEx::WorkerPool::Worker::GutsLoader;
     
     use POEx::WorkerPool::Error::EnqueueError;
     use POEx::WorkerPool::Error::StartError;
     use POEx::WorkerPool::Error::JobError;
 
     use aliased 'POEx::WorkerPool::Role::Job';
+    use aliased 'POEx::WorkerPool::Worker::GutsLoader';
     use aliased 'POEx::WorkerPool::Error::EnqueueError';
     use aliased 'POEx::WorkerPool::Error::StartError';
     use aliased 'POEx::WorkerPool::Error::JobError';
@@ -82,29 +85,21 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     has child_wheel => ( is => 'ro', isa => Wheel, lazy_build => 1 );
     method _build_child_wheel
     {
-        my $classes = $self->job_classes;
+        $DB::single = 1;
         my $wheel = POE::Wheel::Run->new
         (
-            Program => sub 
-            {
-                use Class::MOP;
-                # this little Kernel dance is required to get POE running in
-                # the subprocess and allow easy communication
-                POE::Kernel->stop();
-                
-                Class::MOP::load_class($_) for @$classes;
-                POEx::WorkerPool::Worker::Guts->new();
-
-                POE::Kernel->run();
-            },
+            Program => $self->guts_loader->loader,
             StdioFilter => POE::Filter::Reference->new(),
             StdoutEvent => 'guts_output',
             ErrorEvent  => 'guts_error_handler',
-        ) or Carp::confess('WTF?');
+        ) or Carp::confess('Failed to build child wheel');
 
         $self->poe->kernel->sig_child($wheel->PID, 'guts_exited');
         return $wheel;
     }
+
+    has guts_loader => ( is => 'ro', isa => class_type(GutsLoader), lazy_build => 1);
+    method _build_guts_loader { return GutsLoader->new(job_classes => $self->job_classes); }
 
 
     method guts_error_handler(Str $op, Int $error_num, Str $error_str, WheelID $id, Str $handle_name) is Event
@@ -141,7 +136,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     after _start is Event
     {
         my $alias = $self->pubsub_alias;
-        POEx::PubSub->new(alias => $alias);
+        POEx::PubSub->new(alias => $alias, options => $self->options);
 
         $self->call($alias, 'publish', event_name => +PXWP_WORKER_CHILD_ERROR);
         $self->call($alias, 'publish', event_name => +PXWP_WORKER_CHILD_EXIT);
@@ -367,6 +362,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
     method halt is Event
     {
+        POE::Kernel->sig_child($self->child_wheel->PID);
         $self->child_wheel->kill();
         $self->clear_alias();
     }
@@ -399,7 +395,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 0.092650
+version 0.092720
 
 =head1 ATTRIBUTES
 

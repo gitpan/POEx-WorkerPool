@@ -1,5 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092650';
+our $VERSION = '0.092720';
+
 
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -21,6 +22,9 @@ role POEx::WorkerPool::Role::WorkerPool
 
 
     has job_classes => ( is => 'ro', isa => ArrayRef[ClassName], required => 1);
+
+
+    has options => ( is => 'ro', isa => HashRef );
 
     has queue_type => ( is => 'ro', isa => enum([qw|round_robin fill_up|]), default => 'round_robin');
     
@@ -52,6 +56,7 @@ role POEx::WorkerPool::Role::WorkerPool
                 (
                     job_classes => $self->job_classes,
                     max_jobs => $self->max_jobs_per_worker,
+                    options => $self->options,
                 ) 
             );
         }
@@ -142,7 +147,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092650
+version 0.092720
 
 =head1 ATTRIBUTES
 
@@ -153,6 +158,15 @@ rebless jobs on the other side, it needs to make sure that the classes are
 loaded.
 
 This attribute is used to indicate which classes need to be loaded.
+
+
+
+=head2 options is: ro, isa: HashRef
+
+options is the same options that would be passed to Sessions. Setting trace to
+1 will allow tracing for the Workers.
+
+    POEx::WorkerPool->new(options => { trace => 1 });
 
 
 

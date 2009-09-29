@@ -1,25 +1,25 @@
-package POEx::WorkerPool::Worker::Guts;
+package POEx::WorkerPool::Worker::GutsLoader;
 our $VERSION = '0.092720';
 
 
 
-#ABSTRACT: A generic sub process implementation for Worker
+#ABSTRACT: A Loader implementation for Worker::Guts
 
 use MooseX::Declare;
 
-class POEx::WorkerPool::Worker::Guts
+class POEx::WorkerPool::Worker::GutsLoader
 {
-    with 'POEx::WorkerPool::Role::WorkerPool::Worker::Guts';
+    with 'POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader';
     method import (ClassName $class: ArrayRef[ClassName] :$traits?)
     {
         if(defined($traits))
         {
-            POEx::WorkerPool::Worker::Guts->meta->make_mutable;
+            POEx::WorkerPool::Worker::GutsLoader->meta->make_mutable;
             foreach my $trait (@$traits)
             {
                 with $trait;
             }
-            POEx::WorkerPool::Worker::Guts->meta->make_immutable;
+            POEx::WorkerPool::Worker::GutsLoader->meta->make_immutable;
         }
     }
 }
@@ -32,7 +32,7 @@ class POEx::WorkerPool::Worker::Guts
 
 =head1 NAME
 
-POEx::WorkerPool::Worker::Guts - A generic sub process implementation for Worker
+POEx::WorkerPool::Worker::GutsLoader - A Loader implementation for Worker::Guts
 
 =head1 VERSION
 
@@ -41,7 +41,7 @@ version 0.092720
 =head1 DESCRIPTION
 
 This is only a shell of a class. For details on available methods and 
-attributes please see POEx::WorkerPool::Role::WorkerPool::Worker::Guts
+attributes please see POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader
 
 =head1 AUTHOR
 

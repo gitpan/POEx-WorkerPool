@@ -1,5 +1,6 @@
 package POEx::WorkerPool::Error::EnqueueError;
-our $VERSION = '0.092650';
+our $VERSION = '0.092720';
+
 
 
 #ABSTRACT: An error class indicating problems enqueuing a job
@@ -23,7 +24,7 @@ POEx::WorkerPool::Error::EnqueueError - An error class indicating problems enque
 
 =head1 VERSION
 
-version 0.092650
+version 0.092720
 
 =head1 DESCRIPTION
 

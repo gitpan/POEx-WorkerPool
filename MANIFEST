@@ -15,9 +15,11 @@ lib/POEx/WorkerPool/Role/Job.pm
 lib/POEx/WorkerPool/Role/WorkerPool.pm
 lib/POEx/WorkerPool/Role/WorkerPool/Worker.pm
 lib/POEx/WorkerPool/Role/WorkerPool/Worker/Guts.pm
+lib/POEx/WorkerPool/Role/WorkerPool/Worker/GutsLoader.pm
 lib/POEx/WorkerPool/Types.pm
 lib/POEx/WorkerPool/Worker.pm
 lib/POEx/WorkerPool/Worker/Guts.pm
+lib/POEx/WorkerPool/Worker/GutsLoader.pm
 lib/POEx/WorkerPool/WorkerEvents.pm
 t/00-load.t
 t/01-basic.t

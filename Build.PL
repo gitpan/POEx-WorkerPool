@@ -13,12 +13,11 @@ my $build = Module::Build->new(
 "Nicholas\ Perez\ \<nperez\@cpan\.org\>",
   ],
   requires      => {
-    "Throwable" => '0.092000',
-    "TryCatch" => '1.002000',
     "MooseX::AttributeHelpers" => '0.21',
+    "TryCatch" => '1.002000',
+    "Throwable" => '0.092000',
     "POEx::PubSub" => '0.092460',
     "Data::UUID" => '1.202',
-    "POE" => '1.268',
   },
   script_files => [ qw() ],
 );
