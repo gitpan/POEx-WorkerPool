@@ -1,5 +1,5 @@
 ---
-abstract: 'A second generation publish/subscribe component for the POE framework'
+abstract: 'A multiprocess worker pool for the POE framework'
 author:
   - 'Nicholas Perez <nperez@cpan.org>'
 generated_by: 'Dist::Zilla version 1.092680'
@@ -11,9 +11,10 @@ name: POEx-WorkerPool
 requires:
   Data::UUID: 1.202
   MooseX::AttributeHelpers: 0.21
+  MooseX::CompileTime::Traits: 0.092801
   POEx::PubSub: 0.092460
   Throwable: 0.092000
   TryCatch: 1.002000
 resources:
   repository: git://github.com/nperez/pxwp.git
-version: 0.092720
+version: 0.092800

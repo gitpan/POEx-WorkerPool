@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::Job;
-our $VERSION = '0.092720';
+our $VERSION = '0.092800';
 
 
 
@@ -117,7 +117,7 @@ POEx::WorkerPool::Role::Job - Provides a role for common job semantics
 
 =head1 VERSION
 
-version 0.092720
+version 0.092800
 
 =head1 SYNOPSIS
 

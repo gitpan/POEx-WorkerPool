@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
-our $VERSION = '0.092720';
+our $VERSION = '0.092800';
 
 
 
@@ -122,7 +122,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 0.092720
+version 0.092800
 
 =head1 METHODS
 

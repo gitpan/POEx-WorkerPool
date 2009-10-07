@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Worker;
-our $VERSION = '0.092720';
+our $VERSION = '0.092800';
 
 
 
@@ -9,19 +9,8 @@ use MooseX::Declare;
 
 class POEx::WorkerPool::Worker
 {
+    with 'MooseX::CompileTime::Traits';
     with 'POEx::WorkerPool::Role::WorkerPool::Worker';
-    method import (ClassName $class: ArrayRef[ClassName] :$traits?)
-    {
-        if(defined($traits))
-        {
-            POEx::WorkerPool::Worker->meta->make_mutable;
-            foreach my $trait (@$traits)
-            {
-                with $trait;
-            }
-            POEx::WorkerPool::Worker->meta->make_immutable;
-        }
-    }
 }
 
 1;
@@ -36,7 +25,7 @@ POEx::WorkerPool::Worker - A generic worker class for WorkerPool
 
 =head1 VERSION
 
-version 0.092720
+version 0.092800
 
 =head1 DESCRIPTION
 

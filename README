@@ -1,9 +1,9 @@
 
 
 This archive contains the distribution POEx-WorkerPool, version
-0.092720:
+0.092800:
 
-  A second generation publish/subscribe component for the POE framework
+  A multiprocess worker pool for the POE framework
 
 This software is copyright (c) 2009 by Infinity Interactive.
 

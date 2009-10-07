@@ -1,5 +1,5 @@
 package POEx::WorkerPool::Worker::GutsLoader;
-our $VERSION = '0.092720';
+our $VERSION = '0.092800';
 
 
 
@@ -9,19 +9,8 @@ use MooseX::Declare;
 
 class POEx::WorkerPool::Worker::GutsLoader
 {
+    with 'MooseX::CompileTime::Traits';
     with 'POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader';
-    method import (ClassName $class: ArrayRef[ClassName] :$traits?)
-    {
-        if(defined($traits))
-        {
-            POEx::WorkerPool::Worker::GutsLoader->meta->make_mutable;
-            foreach my $trait (@$traits)
-            {
-                with $trait;
-            }
-            POEx::WorkerPool::Worker::GutsLoader->meta->make_immutable;
-        }
-    }
 }
 
 1;
@@ -36,7 +25,7 @@ POEx::WorkerPool::Worker::GutsLoader - A Loader implementation for Worker::Guts
 
 =head1 VERSION
 
-version 0.092720
+version 0.092800
 
 =head1 DESCRIPTION
 

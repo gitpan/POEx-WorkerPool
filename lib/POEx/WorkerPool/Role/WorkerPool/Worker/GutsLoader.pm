@@ -1,5 +1,5 @@
 {package POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader;
-our $VERSION = '0.092720';
+our $VERSION = '0.092800';
 }
 
 
@@ -101,7 +101,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader - Implementation role of 
 
 =head1 VERSION
 
-version 0.092720
+version 0.092800
 
 =head1 ATTRIBUTES
 
