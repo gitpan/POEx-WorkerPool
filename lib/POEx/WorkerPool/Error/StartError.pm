@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Error::StartError;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Error::StartError::VERSION = '1.100910';
 
 #ABSTRACT: An error class indicating the Worker queue failed to start
 
@@ -15,7 +13,6 @@ class POEx::WorkerPool::Error::StartError extends POEx::WorkerPool::Error
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -24,7 +21,7 @@ POEx::WorkerPool::Error::StartError - An error class indicating the Worker queue
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 AUTHOR
 
@@ -32,13 +29,12 @@ version 0.092800
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

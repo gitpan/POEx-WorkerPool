@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Role::WorkerPool::VERSION = '1.100910';
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
 
@@ -138,7 +136,6 @@ role POEx::WorkerPool::Role::WorkerPool
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -147,11 +144,13 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
-=head1 ATTRIBUTES
+=head1 PUBLIC_ATTRIBUTES
 
-=head2 job_classes is: ro, isa: ArrayRef[ClassName], required: 1
+=head2 job_classes
+
+ is: ro, isa: ArrayRef[ClassName], required: 1
 
 In order for the serializer on the other side of the process boundary to
 rebless jobs on the other side, it needs to make sure that the classes are 
@@ -159,58 +158,58 @@ loaded.
 
 This attribute is used to indicate which classes need to be loaded.
 
+=head2 options
 
-
-=head2 options is: ro, isa: HashRef
+ is: ro, isa: HashRef
 
 options is the same options that would be passed to Sessions. Setting trace to
 1 will allow tracing for the Workers.
 
     POEx::WorkerPool->new(options => { trace => 1 });
 
+=head2 queue_type
 
-
-=head2 queue_type is: ro, isa: enum([qw|round_robin fill_up|]), default: round_robin
+ is: ro, isa: enum([qw|round_robin fill_up|]), default: round_robin
 
 This attribute specifies the queue type for the WorkerPool and changes how
 workers are pulled from the pool
 
+=head2 max_workers 
 
-
-=head2 max_workers is: ro, isa: Int, default: 5
+ is: ro, isa: Int, default: 5
 
 This determines how many workers the Pool will spin up
 
+=head2 current_worker_index
 
-
-=head2 current_worker_index is: rw, isa: ScalarRef
+ is: rw, isa: ScalarRef
 
 This stores the current index into workers. Dereference to manipulate the Int value.
 
+=head2 workers
 
-
-=head2 workers is: ro, isa: ArrayRef[Worker]
+ is: ro, isa: ArrayRef[Worker]
 
 This attribute holds all of the workers in the pool
 
+=head2 max_jobs_per_worker
 
-
-=head2 max_jobs_per_worker is: ro, isa: Int, default: 5
+ is: ro, isa: Int, default: 5
 
 This attribute let's the workers know how many jobs their queue can hold
 
+=head1 PUBLIC_METHODS
 
+=head2 incr_worker_index
 
-=head1 METHODS
-
-=head2 incr_worker_index returns Int
+ returns Int
 
 This is a convenience method for incrementing the index and wrapping around
 when it exceeds max_workers
 
+=head2 get_next_worker
 
-
-=head2 get_next_worker returns (DoesWorker)
+ returns (DoesWorker)
 
 This returns the next worker in the pool as determined by the queue_type
 attribute.
@@ -222,22 +221,18 @@ If it is unable to return a suitable worker (all of the workers are currently
 active or all of their job queues are full, etc), it will throw a
 POEx::WorkerPool::Error::NoAvailableWorkers exception.
 
+=head2 queue_job
 
-
-=head2 queue_job(DoesJob $job) returns (SessionAlias)
+ (DoesJob $job) returns (SessionAlias)
 
 This method grabs the next available worker, enqueues the job, starts the
 worker's queue processing and returns the worker's pubsub alias that can be 
 used to subscribe to various events that the worker fires.
 
-
-
-=head2 halt is Event
+=head2 halt
 
 This method will halt any active workers in the worker pool and force them to
 release resouces and clean up.
-
-
 
 =head1 AUTHOR
 
@@ -245,13 +240,12 @@ release resouces and clean up.
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

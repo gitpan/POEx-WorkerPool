@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Types;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Types::VERSION = '1.100910';
 
 use warnings;
 use strict;
@@ -75,7 +73,7 @@ subtype JobStatus,
         type => WorkerEvent,
         ID => Str,
         msg => Ref,
-        percent_complete => Maybe[Int]
+        percent_complete => Optional[Maybe[Int]]
     ],
     where
     {
@@ -98,7 +96,6 @@ subtype IsaError,
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -107,7 +104,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 DESCRIPTION
 
@@ -115,39 +112,27 @@ This module exports the type constrains needed for POEx::WorkerPool.
 
 For importing options see MooseX::Types.
 
-
-
 =head1 TYPES
 
 =head2 DoesWorker
 
 Must compose the POEx::WorkerPool::Role::WorkerPool::Worker role.
 
-
-
 =head2 DoesWorkerPool
 
 Must compose the POEx::WorkerPool::Role::WorkerPool role.
-
-
 
 =head2 DoesWorkerGuts
 
 Must compose the POEx::WorkerPool::Role::WorkerPool::Worker::Guts role.
 
-
-
 =head2 DoesJob
 
 Must compose the POEx::WorkerPool::Role::WorkerPool::Job role.
 
-
-
 =head2 WorkerEvent
 
 Must be one of the worker events defined in POEx::WorkerPool::WorkerEvents
-
-
 
 =head2 JobStatus
 
@@ -163,21 +148,15 @@ a hash with three keys and potential forth depending on type. See below:
 
 percent_complete is only valid when type is +PXWP_JOB_PROGRESS
 
-
-
 =head2 JobStep
 
 When constructing Jobs, each step must match a Tuple[CodeRef, ArrayRef] where
 the code ref is the actual thing to execute and the array ref is the collection
 of arguments to be passed to the code ref verbatim.
 
-
-
 =head2 IsaError
 
 This is a convenience constraint that checks if the object inherits from Error
-
-
 
 =head1 AUTHOR
 
@@ -185,13 +164,12 @@ This is a convenience constraint that checks if the object inherits from Error
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

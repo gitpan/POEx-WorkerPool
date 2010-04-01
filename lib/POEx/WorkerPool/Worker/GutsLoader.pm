@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Worker::GutsLoader;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Worker::GutsLoader::VERSION = '1.100910';
 
 #ABSTRACT: A Loader implementation for Worker::Guts
 
@@ -16,7 +14,6 @@ class POEx::WorkerPool::Worker::GutsLoader
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -25,7 +22,7 @@ POEx::WorkerPool::Worker::GutsLoader - A Loader implementation for Worker::Guts
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 DESCRIPTION
 
@@ -38,13 +35,12 @@ attributes please see POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

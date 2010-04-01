@@ -1,7 +1,5 @@
 package POEx::WorkerPool::WorkerEvents;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::WorkerEvents::VERSION = '1.100910';
 
 #ABSTRACT: Exported event symbols for WorkerPool
 
@@ -51,7 +49,6 @@ use Sub::Exporter -setup =>
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -60,7 +57,7 @@ POEx::WorkerPool::WorkerEvents - Exported event symbols for WorkerPool
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 DESCRIPTION
 
@@ -84,21 +81,18 @@ on signatures required for each event
     PXWP_JOB_COMPLETE
     PXWP_WORKER_ERROR
 
-
-
 =head1 AUTHOR
 
   Nicholas Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

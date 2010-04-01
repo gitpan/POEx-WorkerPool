@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Role::Job;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Role::Job::VERSION = '1.100910';
 
 #ABSTRACT: Provides a role for common job semantics
 
@@ -29,19 +27,20 @@ role POEx::WorkerPool::Role::Job
 
     has steps => 
     (
-        metaclass => 'Collection::Array',
+        traits => ['Array'],
         is => 'rw', 
         isa => ArrayRef[JobStep],
         default => sub { [] },
-        provides =>
+        handles =>
         {
-            push    => '_enqueue_step',
-            shift   => 'dequeue_step',
-            count   => 'count_steps',
+            _enqueue_step => 'push',
+            dequeue_step => 'shift',
+            count_steps => 'count',
         }
     );
 
-    has total_steps => ( is => 'rw', isa => ScalarRef, lazy_build => 1 );
+
+    has total_steps => ( is => 'ro', isa => ScalarRef, lazy_build => 1 );
     method _build_total_steps { my $i = 0; \$i; }
 
 
@@ -108,7 +107,6 @@ role POEx::WorkerPool::Role::Job
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -117,17 +115,17 @@ POEx::WorkerPool::Role::Job - Provides a role for common job semantics
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 SYNOPSIS
 
-class MyJob with POEx::WorkerPool::Role::Job
-{
-    method init_job
+    class MyJob with POEx::WorkerPool::Role::Job
     {
-        # Implement job initialization across the process boundary here
+        method init_job
+        {
+            # Implement job initialization across the process boundary here
+        }
     }
-}
 
 =head1 DESCRIPTION
 
@@ -139,21 +137,23 @@ process boundary where coderefs, database handles, etc won't have survived.
 Use init_job to initialize all of those ephemeral resources necessary for the
 job and also to populate the steps to the job. 
 
-=head1 ATTRIBUTES
+=head1 PUBLIC_ATTRIBUTES
 
-=head2 ID is: ro, isa: Str
+=head2 ID
+
+ is: ro, isa: Str
 
 This attribute stores the unique ID for the job. By default it uses 
 Data::UUID::create_str()
 
+=head2 steps 
 
-
-=head2 steps metaclass: Collection::Array, is: ro, isa: ArrayRef[JobStep]
+ traits: Array, is: ro, isa: ArrayRef[JobStep]
 
 This attribute stores the steps for the job. All jobs must have one step before
 execution or else a JobError exception will be thrown.
 
-The following provides are defined to access the steps of the job:
+The following handles are defined to access the steps of the job:
 
     {
         push    => '_enqueue_step',
@@ -161,30 +161,36 @@ The following provides are defined to access the steps of the job:
         count   => 'count_steps',
     }
 
+=head1 PROTECTED_ATTRIBUTES
 
+=head2 total_steps
 
-=head1 METHODS
+ is: ro, isa: ScalarRef
 
-=head2 enqueue_step(JobStep $step)
+ total_steps contains a scalar ref of the count of the total number of steps
+
+=head1 PUBLIC_METHODS
+
+=head2 enqueue_step
+
+ (JobStep $step)
 
 enqueue_step takes a JobStep and places it into the steps collection and also 
 increments the total_steps counter.
 
+=head2 is_multi_step 
 
-
-=head2 is_multi_step returns (Bool)
+ returns (Bool)
 
 A simple convenience method to check if the job has multiple steps
 
+=head2 execute_step 
 
-
-=head2 execute_step returns (JobStatus)
+ returns (JobStatus)
 
 execute_step dequeues a step from steps and executes it, building a proper 
 JobStatus return value. If executing the step produces an exception, the
 exception class is JobError
-
-
 
 =head1 AUTHOR
 
@@ -192,13 +198,12 @@ exception class is JobError
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

@@ -2,19 +2,39 @@
 abstract: 'A multiprocess worker pool for the POE framework'
 author:
   - 'Nicholas Perez <nperez@cpan.org>'
-generated_by: 'Dist::Zilla version 1.092680'
+build_requires:
+  FindBin: 0
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.31
+generated_by: 'Dist::Zilla version 2.100880'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: POEx-WorkerPool
 requires:
-  Data::UUID: 1.202
-  MooseX::AttributeHelpers: 0.21
-  MooseX::CompileTime::Traits: 0.092801
-  POEx::PubSub: 0.092460
-  Throwable: 0.092000
-  TryCatch: 1.002000
+  Class::MOP: 0
+  Data::UUID: 0
+  Moose: 0
+  Moose::Util::TypeConstraints: 0
+  MooseX::AttributeHelpers: 0
+  MooseX::CompileTime::Traits: 0
+  MooseX::Declare: 0
+  MooseX::Types: 0
+  MooseX::Types::Moose: 0
+  MooseX::Types::Structured: 0
+  POE: 0
+  POE::Filter::Reference: 0
+  POE::Wheel::ReadWrite: 0
+  POE::Wheel::Run: 0
+  POEx::PubSub: 0
+  POEx::Role::SessionInstantiation: 0
+  POEx::Types: 0
+  Sub::Exporter: 0
+  TryCatch: 0
+  aliased: 0
+  constant: 0
 resources:
   repository: git://github.com/nperez/pxwp.git
-version: 0.092800
+version: 1.100910

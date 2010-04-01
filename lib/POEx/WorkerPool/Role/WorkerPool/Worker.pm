@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.100910';
 
 #ABSTRACT: A role that provides common semantics for Workers
 
@@ -66,15 +64,15 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
     has jobs => 
     (
-        metaclass => 'Collection::Array',
+        traits => ['Array'],
         is => 'ro', 
         isa => ArrayRef[DoesJob], 
         default => sub { [] },
-        provides =>
+        handles =>
         {
-            push    => '_enqueue_job',
-            shift   => '_dequeue_job',
-            count   => 'count_jobs',
+            _enqueue_job => 'push',
+            _dequeue_job => 'shift',
+            count_jobs => 'count',
         }
     );
 
@@ -85,7 +83,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     has child_wheel => ( is => 'ro', isa => Wheel, lazy_build => 1 );
     method _build_child_wheel
     {
-        $DB::single = 1;
         my $wheel = POE::Wheel::Run->new
         (
             Program => $self->guts_loader->loader,
@@ -97,6 +94,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
         $self->poe->kernel->sig_child($wheel->PID, 'guts_exited');
         return $wheel;
     }
+
 
     has guts_loader => ( is => 'ro', isa => class_type(GutsLoader), lazy_build => 1);
     method _build_guts_loader { return GutsLoader->new(job_classes => $self->job_classes); }
@@ -386,7 +384,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
 
 
-
 =pod
 
 =head1 NAME
@@ -395,94 +392,141 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
-=head1 ATTRIBUTES
+=head1 PUBLIC_ATTRIBUTES
 
-=head2 job_classes is: ro, isa: ArrayRef[ClassName], required: 1
+=head2 job_classes
+
+ is: ro, isa: ArrayRef[ClassName], required: 1
 
 In order for the serializer on the other side of the process boundary to
 rebless jobs on the other side, it needs to make sure those classes are loaded.
 
 This attribute is used to indicate which classes need to be loaded.
 
+=head2 uuid
 
-
-=head2 uuid is: ro, isa: Str
+ is: ro, isa: Str
 
 This attribute holds the basis for the aliases for the Worker and its PubSub.
 It defaults to Data::UUID->new()->create_str()
 
+=head2 pubsub_alias
 
-
-=head2 pubsub_alias is: ro, isa: Str
+ is: ro, isa: Str
 
 This is holds the alias to the associated PubSub component for this Worker
 
+=head2 status
 
-
-=head2 status is: rw, isa: Bool
+ is: rw, isa: Bool
 
 status indicates whether the Worker is currently processing its queue.
 
+=head2 jobs
 
+ traits: Array, is: ro, isa: ArrayRef[DoesJob]
 
-=head2 _in_process is: rw, isa: DoesJob
+This is the FIFO queue of jobs this worker is responsible for processing.
+
+The following handles are provided:
+
+    {
+        _enqueue_job => 'push',
+        _dequeue_job => 'shift',
+        count_jobs => 'count',
+    }
+
+=head2 max_jobs
+
+ is: ro, isa: Int
+
+This determines the fill mark for the job queue.
+
+=head1 PROTECTED_ATTRIBUTES
+
+=head2 child_wheel
+
+ is: ro, isa: Wheel
+
+child_wheel holds this Worker's POE::Wheel::Run instance
+
+=head2 guts_loader
+
+ is: ro, isa: GutsLoader
+
+guts_loader holds the instance of the GutsLoader used as the Program for the child_wheel
+
+=head1 PRIVATE_ATTRIBUTES
+
+=head2 _in_process
+
+ is: rw, isa: DoesJob
 
 This private attribute holds the currently processing Job
 
+=head2 _completed_jobs
 
-
-=head2 _completed_jobs is: rw, isa: ScalarRef
+ is: rw, isa: ScalarRef
 
 This private attribute is a counter to the number of completed jobs this 
 current processing cycle.
 
-
-
-=head2 _failed_jobs is: rw, isa: ScalarRef
-
-This private attribute is a counter to the number of failed jobs this 
-current processing cycle.
-
-
-
-=head2 metaclass: Collection::Array, is: ro, isa: ArrayRef[DoesJob]
-
-This is the FIFO queue of jobs this worker is responsible for processing.
-
-The following provides are defined:
-
-    {
-        push    => '_enqueue_job',
-        shift   => '_dequeue_job',
-        count   => 'count_jobs',
-    }
-
-
-
-=head2 max_jobs is: ro, isa: Int
-
-This determines the fill mark for the job queue.
-
-
-
-=head2 child_wheel is: ro, isa: Wheel
-
-child_wheel holds this Worker's POE::Wheel::Run instance
-
-
-
-=head1 METHODS
+=head1 PUBLIC_METHODS
 
 =head2 is_[not_]active
 
 These are convinence methods for checking the status of the Worker
 
+=head2 enqueue_job
 
+ (DoesJob $job)
 
+enqueue_job takes an object with the Job role and places it into the queue
+after a few basic checks, such as if the Worker is currently processing or if
+the job queue has met the max_jobs limitation. If either case is true, an
+EnquueuError is thrown.
 
-=head2 guts_error_handler(Str $op, Int $error_num, Str $error_str, WheelID $id, Str $handle_name) is Event
+This method fires +PXWP_JOB_ENQUEUED to the associated PubSub component on
+success.
+
+Subscribers will need to have the following signature:
+
+    method handler (SessionID :$worker_id, DoesJob $job ) is Event
+
+=head2 enqueue_jobs
+
+ (ArrayRef[DoesJob] $jobs)
+
+enqueue_jobs does the same thing as enqueue_job, but it acts on an array of
+jobs. Each job successfully enqueued means the worker will fire the 
++PXWP_JOB_ENQUEUED event via PubSub.
+
+=head2 start_processing
+
+ is Event
+
+start_processing kicks the Worker into gear and prevents adding jobs until the
+crrent queue has been processed. If there are no jobs in the queue, StartError
+will be thrown. This method fires the +PXWP_START_PROCESSING event via PubSub.
+
+Subscribers should have the following signature:
+
+    method handler (SessionID :$worker_id, Int :$count_jobs)
+
+=head2 halt
+
+ is Event
+
+halt will destroy the child process, and unset the associated alias ensuring 
+that the Session will stop
+
+=head1 PROTECTED_METHODS
+
+=head2 guts_error_handler
+
+ (Str $op, Int $error_num, Str $error_str, WheelID $id, Str $handle_name) is Event
 
 guts_error_handler is the handler given to POE::Wheel::Run to handle errors
 that may crop up during operation of the wheel. It will post the arguments via
@@ -503,9 +547,9 @@ Subscribers will need the following signature:
 This method will then issue a SIGTERM signal to the child process forcing it
 to rebuild after exiting
 
+=head2 guts_exited
 
-
-=head2 guts_exited(Str $chld, Int $pid, Int $exit_val) is Event
+ (Str $chld, Int $pid, Int $exit_val) is Event
 
 This is the SIGCHLD handler for the child process. It will post the arguments
 via +PXWP_WORKER_CHILD_EXIT using PubSub.
@@ -521,59 +565,116 @@ Subscribers will need to have the following signature:
 
 The wheel will then cleared 
 
+=head2 after _start
 
-
-=head2 after _start is Event
+ is Event
 
 _start is advised to create a new PubSub component specific for this Worker and
 publish all of the various events that the Worker can fire.
 
+=head2 after _stop
 
-
-=head2 after _stop is Event
+ is Event
 
 _stop is advised to terminate the associated PubSub component by calling its
 destroy event.
 
+=head2 guts_output
 
+ (JobStatus $job_status) is Event
 
-=head2 enqueue_job(DoesJob $job)
+This is the StdoutEvent for the child POE::Wheel::Run. It handles all of the
+child output which is in the form of JobStatus hashrefs. The following 
+describes the potential events from the child and the actions taken
 
-enqueue_job takes an object with the Job role and places it into the queue
-after a few basic checks, such as if the Worker is currently processing or if
-the job queue has met the max_jobs limitation. If either case is true, an
-EnquueuError is thrown.
++PXWP_JOB_COMPLETE
 
-This method fires +PXWP_JOB_ENQUEUED to the associated PubSub component on
-success.
+    Action: 
+        _in_process is cleared and _completed_jobs for this session is
+        incremented. yields() to _process_queue.
+    
+    PubSub Event:
+        +PXWP_JOB_COMPLETE
+    
+    PubSub Signature:
+        method handler(SessionID :$worker_id, DoesJob :$job, Ref :$msg)
 
-Subscribers will need to have the following signature:
+    Notes:
+        The :$msg argument will contain the output from the Job's execution
 
-    method handler (SessionID :$worker_id, DoesJob $job ) is Event
++PXWP_JOB_PROGRESS
 
+    Action: 
+        PubSub event posted.
+    
+    PubSub Event:
+        +PXWP_JOB_PROGRESS
+    
+    PubSub Signature:
+        method handler
+        (
+            SessionID :$worker_id, 
+            DoesJob :$job, 
+            Int :$percent_complete,
+            Ref :$msg,
+        )
 
+    Notes:
+        The :$msg argument will contain the output from the last step executed
+        for multi-step jobs
 
-=head2 enqueue_jobs(ArrayRef[DoesJob] $jobs)
++PXWP_JOB_FAILED
 
-enqueue_jobs does the same thing as enqueue_job, but it acts on an array of
-jobs. Each job successfully enqueued means the worker will fire the 
-+PXWP_JOB_ENQUEUED event via PubSub.
+    Action: 
+        _in_process is cleared and _failed_jobs for this session is
+        incremented. yields() to _process_queue.
+    
+    PubSub Event:
+        +PXWP_JOB_FAILED
+    
+    PubSub Signature:
+        method handler(SessionID :$worker_id, DoesJob :$job, Ref :$msg)
 
+    Notes:
+        The :$msg argument will contain the exception generated from the Job
 
++PXWP_JOB_START
 
-=head2 start_processing
+    Action: 
+        PubSub event posted.
+    
+    PubSub Event:
+        +PXWP_JOB_START
+    
+    PubSub Signature:
+        method handler
+        (
+            SessionID :$worker_id, 
+            DoesJob :$job, 
+        )
 
-start_processing kicks the Worker into gear and prevents adding jobs until the
-crrent queue has been processed. If there are no jobs in the queue, StartError
-will be thrown. This method fires the +PXWP_START_PROCESSING event via PubSub.
+    Notes:
+        This is an indication that the child process received the Job and is
+        beginning execution.
 
-Subscribers should have the following signature:
+=head2 die_signal_handler
 
-    method handler (SessionID :$worker_id, Int :$count_jobs)
+ (Str $sig, HashRef) is Event
 
+This is the handler for any exceptions that are thrown. All exceptions will be
+relayed to the consumer via a PubSub published event: +PXWP_WORKER_ERROR
 
+Subscribers will need the following signature:
 
-=head2 _process_queue is Event
+    method handler(SessionID :$worker_id, IsaError :$exception, HashRef :$original) is Event
+
+Note that $original will be what was given to us from POE
+
+=head1 PRIVATE_METHODS
+
+=head2 _process_queue
+
+ is Event
 
 This private event is the queue processor. As jobs are dequeued for processing,
 +PXWP_JOB_DEQUEUED will be fired via PubSub. Subscribers will need the
@@ -594,9 +695,9 @@ PubSub. Subscribers will need the following signature:
 Then the run stats will be cleared, and the status will be toggled so that the
 Worker may again accept jobs.
 
+=head2 _process_job
 
-
-=head2 _process_job(DoesJob $job) is Event
+ (DoesJob $job) is Event
 
 This private event takes the given job and feeds it to the child process to be
 processed. If the child process doesn't exist for whatever reason, 
@@ -607,110 +708,12 @@ following signature:
 
 This event also places the given job into the _in_process attribute.
 
+=attrtibute_private _failed_jobs
 
+ is: rw, isa: ScalarRef
 
-=head2 guts_output(JobStatus $job_status) is Event
-
-This is the StdoutEvent for the child POE::Wheel::Run. It handles all of the
-child output which is in the form of JobStatus hashrefs. The following 
-describes the potential events from the child and the actions taken
-
-    Type: 
-        +PXWP_JOB_COMPLETE
-
-    Action: 
-        _in_process is cleared and _completed_jobs for this session is
-        incremented. yields() to _process_queue.
-
-    PubSub Event:
-        +PXWP_JOB_COMPLETE
-
-    PubSub Signature:
-        method handler(SessionID :$worker_id, DoesJob :$job, Ref :$msg)
-
-    Notes:
-        The :$msg argument will contain the output from the Job's execution
-
-    Type: 
-        +PXWP_JOB_PROGRESS
-
-    Action: 
-        PubSub event posted.
-
-    PubSub Event:
-        +PXWP_JOB_PROGRESS
-
-    PubSub Signature:
-        method handler
-        (
-            SessionID :$worker_id, 
-            DoesJob :$job, 
-            Int :$percent_complete,
-            Ref :$msg,
-        )
-
-    Notes:
-        The :$msg argument will contain the output from the last step executed
-        for multi-step jobs
-
-    Type: 
-        +PXWP_JOB_FAILED
-
-    Action: 
-        _in_process is cleared and _failed_jobs for this session is
-        incremented. yields() to _process_queue.
-
-    PubSub Event:
-        +PXWP_JOB_FAILED
-
-    PubSub Signature:
-        method handler(SessionID :$worker_id, DoesJob :$job, Ref :$msg)
-
-    Notes:
-        The :$msg argument will contain the exception generated from the Job
-
-    Type: 
-        +PXWP_JOB_START
-
-    Action: 
-        PubSub event posted.
-
-    PubSub Event:
-        +PXWP_JOB_START
-
-    PubSub Signature:
-        method handler
-        (
-            SessionID :$worker_id, 
-            DoesJob :$job, 
-        )
-
-    Notes:
-        This is an indication that the child process received the Job and is
-        beginning execution.
-
-    
-
-
-=head2 halt is Event
-
-halt will destroy the child process, and unset the associated alias ensuring 
-that the Session will stop
-
-
-
-=head2 die_signal_handler(Str $sig, HashRef) is Event
-
-This is the handler for any exceptions that are thrown. All exceptions will be
-relayed to the consumer via a PubSub published event: +PXWP_WORKER_ERROR
-
-Subscribers will need the following signature:
-
-    method handler(SessionID :$worker_id, IsaError :$exception, HashRef :$original) is Event
-
-Note that $original will be what was given to us from POE
-
-
+This private attribute is a counter to the number of failed jobs this 
+current processing cycle.
 
 =head1 AUTHOR
 
@@ -718,13 +721,12 @@ Note that $original will be what was given to us from POE
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

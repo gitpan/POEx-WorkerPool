@@ -1,7 +1,5 @@
 package POEx::WorkerPool;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::VERSION = '1.100910';
 
 #ABSTRACT: A generic multiprocess worker pool for the POE framework
 
@@ -16,7 +14,6 @@ class POEx::WorkerPool
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -25,7 +22,7 @@ POEx::WorkerPool - A generic multiprocess worker pool for the POE framework
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
 =head1 SYNOPSIS
 
@@ -54,7 +51,7 @@ version 0.092800
     {
         with 'POEx::Role::SessionInstantiation';
         use aliased 'POEx::Role::Event';
-
+        
         use POEx::WorkerPool::Types(':all');
         use POEx::WorkerPool::WorkerEvents(':all');
 
@@ -117,13 +114,12 @@ apply s/POEx::/POEx::WorkerPool::Role::/ to the class names.
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

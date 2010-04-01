@@ -1,7 +1,5 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
-our $VERSION = '0.092800';
-
-
+$POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.100910';
 
 #ABSTRACT: A role that provides common semantics for Worker guts
 
@@ -113,7 +111,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -122,47 +119,49 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 0.092800
+version 1.100910
 
-=head1 METHODS
+=head1 PUBLIC_METHODS
 
-=head2 after _start is Event
+=head2 process_job
 
-_start is advised to buid the communication wheel back to the parent process
-and also register a signal handler for DIE so we can communicate exceptions
-back to the parent
-
-
-
-=head2 init_job(DoesJob $job, WheelID $wheel) is Event
-
-init_job is the InputEvent on the ReadWrite wheel that accepts input from the
-parent process. It attempts to call ->init_job on the job it receives. If that
-is successful it will then proceed on to send a return message of PXWP_JOB_START
-and yield to process_job()
-
-
-
-=head2 process_job(DoesJob $job) is Event
+ (DoesJob $job) is Event
 
 process_job takes the initialized job and calls ->execute_step on the job. If
 there is more than one step, another process_job will be queued up via POE with
 the same job as the argument. Each step along the way returns a JobStatus which
 is then sent on to send_message which communicates with the parent process
 
+=head2 send_message
 
-
-=head2 send_message(JobStatus $status) is Event
+ (JobStatus $status) is Event
 
 send_messge communicates with the parent process each JobStatus it receives.
 
+=head1 PROTECTED_METHODS
 
+=head2 after _start
 
-=head2 die_signal(Str $signal, HashRef $stuff) is Event
+ is Event
+
+_start is advised to buid the communication wheel back to the parent process
+and also register a signal handler for DIE so we can communicate exceptions
+back to the parent
+
+=head2 init_job
+
+ (DoesJob $job, WheelID $wheel) is Event
+
+init_job is the InputEvent on the ReadWrite wheel that accepts input from the
+parent process. It attempts to call ->init_job on the job it receives. If that
+is successful it will then proceed on to send a return message of PXWP_JOB_START
+and yield to process_job()
+
+=head2 die_signal
+
+ (Str $signal, HashRef $stuff) is Event
 
 die_signal is our signal handler if something unexpected happens.
-
-
 
 =head1 AUTHOR
 
@@ -170,13 +169,12 @@ die_signal is our signal handler if something unexpected happens.
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=cut 
-
+=cut
 
 
 __END__

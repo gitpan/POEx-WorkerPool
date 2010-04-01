@@ -1,12 +1,13 @@
 
 
-This archive contains the distribution POEx-WorkerPool, version
-0.092800:
+This archive contains the distribution POEx-WorkerPool,
+version 1.100910:
 
   A multiprocess worker pool for the POE framework
 
-This software is copyright (c) 2009 by Infinity Interactive.
+This software is copyright (c) 2010 by Infinity Interactive.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
+
 
