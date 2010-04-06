@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Types;
-$POEx::WorkerPool::Types::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Types::VERSION = '1.100960';
+}
 
 use warnings;
 use strict;
@@ -104,7 +106,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 

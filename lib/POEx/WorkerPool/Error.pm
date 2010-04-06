@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Error;
-$POEx::WorkerPool::Error::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Error::VERSION = '1.100960';
+}
 
 use MooseX::Declare;
 
@@ -25,7 +27,7 @@ POEx::WorkerPool::Error - Error class for WorkerPool using Throwable
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 

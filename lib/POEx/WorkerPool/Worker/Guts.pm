@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Worker::Guts;
-$POEx::WorkerPool::Worker::Guts::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Worker::Guts::VERSION = '1.100960';
+}
 
 #ABSTRACT: A generic sub process implementation for Worker
 
@@ -22,7 +24,7 @@ POEx::WorkerPool::Worker::Guts - A generic sub process implementation for Worker
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 

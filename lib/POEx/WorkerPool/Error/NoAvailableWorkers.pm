@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Error::NoAvailableWorkers;
-$POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.100960';
+}
 
 #ABSTRACT: An error class indicating that no workers are available
 
@@ -21,7 +23,7 @@ POEx::WorkerPool::Error::NoAvailableWorkers - An error class indicating that no 
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 

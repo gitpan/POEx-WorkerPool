@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Role::Job;
-$POEx::WorkerPool::Role::Job::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Role::Job::VERSION = '1.100960';
+}
 
 #ABSTRACT: Provides a role for common job semantics
 
@@ -115,7 +117,7 @@ POEx::WorkerPool::Role::Job - Provides a role for common job semantics
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 SYNOPSIS
 

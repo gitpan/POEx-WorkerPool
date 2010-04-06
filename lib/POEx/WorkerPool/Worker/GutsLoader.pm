@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Worker::GutsLoader;
-$POEx::WorkerPool::Worker::GutsLoader::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Worker::GutsLoader::VERSION = '1.100960';
+}
 
 #ABSTRACT: A Loader implementation for Worker::Guts
 
@@ -22,7 +24,7 @@ POEx::WorkerPool::Worker::GutsLoader - A Loader implementation for Worker::Guts
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 

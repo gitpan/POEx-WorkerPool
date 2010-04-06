@@ -1,5 +1,7 @@
 package POEx::WorkerPool::Worker;
-$POEx::WorkerPool::Worker::VERSION = '1.100910';
+BEGIN {
+  $POEx::WorkerPool::Worker::VERSION = '1.100960';
+}
 
 #ABSTRACT: A generic worker class for WorkerPool
 
@@ -22,7 +24,7 @@ POEx::WorkerPool::Worker - A generic worker class for WorkerPool
 
 =head1 VERSION
 
-version 1.100910
+version 1.100960
 
 =head1 DESCRIPTION
 
