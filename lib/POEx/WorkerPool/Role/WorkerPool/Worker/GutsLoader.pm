@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.100960';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.101040';
 }
 
 #ABSTRACT: Implementation role of the Guts loader
@@ -99,7 +99,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader - Implementation role of 
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 PUBLIC_ATTRIBUTES
 

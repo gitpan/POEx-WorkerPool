@@ -1,6 +1,6 @@
 package POEx::WorkerPool::WorkerEvents;
 BEGIN {
-  $POEx::WorkerPool::WorkerEvents::VERSION = '1.100960';
+  $POEx::WorkerPool::WorkerEvents::VERSION = '1.101040';
 }
 
 #ABSTRACT: Exported event symbols for WorkerPool
@@ -59,7 +59,7 @@ POEx::WorkerPool::WorkerEvents - Exported event symbols for WorkerPool
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 DESCRIPTION
 

@@ -24,7 +24,7 @@ my %WriteMakefileArgs = (
                                            },
                        'ABSTRACT' => 'A multiprocess worker pool for the POE framework',
                        'EXE_FILES' => [],
-                       'VERSION' => '1.100960',
+                       'VERSION' => '1.101040',
                        'PREREQ_PM' => {
                                         'POE::Wheel::Run' => '0',
                                         'POEx::Role::SessionInstantiation' => '0',

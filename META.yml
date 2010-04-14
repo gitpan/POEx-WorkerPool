@@ -39,4 +39,4 @@ requires:
   constant: 0
 resources:
   repository: git://github.com/nperez/pxwp.git
-version: 1.100960
+version: 1.101040

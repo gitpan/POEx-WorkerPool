@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.100960';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.101040';
 }
 
 #ABSTRACT: A role that provides common semantics for Worker guts
@@ -121,7 +121,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 PUBLIC_METHODS
 

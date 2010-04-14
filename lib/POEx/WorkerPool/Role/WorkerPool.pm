@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.100960';
+  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.101040';
 }
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -56,7 +56,7 @@ role POEx::WorkerPool::Role::WorkerPool
                 (
                     job_classes => $self->job_classes,
                     max_jobs => $self->max_jobs_per_worker,
-                    options => $self->options,
+                    ($self->options ? (options => $self->options) : ()),
                 ) 
             );
         }
@@ -146,7 +146,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 PUBLIC_ATTRIBUTES
 

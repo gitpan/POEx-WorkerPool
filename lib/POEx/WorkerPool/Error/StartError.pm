@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Error::StartError;
 BEGIN {
-  $POEx::WorkerPool::Error::StartError::VERSION = '1.100960';
+  $POEx::WorkerPool::Error::StartError::VERSION = '1.101040';
 }
 
 #ABSTRACT: An error class indicating the Worker queue failed to start
@@ -23,7 +23,7 @@ POEx::WorkerPool::Error::StartError - An error class indicating the Worker queue
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 AUTHOR
 

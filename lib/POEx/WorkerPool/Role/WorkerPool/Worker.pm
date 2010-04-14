@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.100960';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.101040';
 }
 
 #ABSTRACT: A role that provides common semantics for Workers
@@ -394,7 +394,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 1.100960
+version 1.101040
 
 =head1 PUBLIC_ATTRIBUTES
 
