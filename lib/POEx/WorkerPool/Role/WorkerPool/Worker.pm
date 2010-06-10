@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.101040';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.101610';
 }
 
 #ABSTRACT: A role that provides common semantics for Workers
@@ -130,6 +130,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
         );
 
         $self->clear_child_wheel();
+        $self->clear_alias();
     }
 
 
@@ -158,11 +159,11 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
         $self->child_wheel();
     }
 
-
     after _stop is Event
     {
         $self->call($self->pubsub_alias, 'destroy');
     }
+
 
 
     method enqueue_job(DoesJob $job) is Event
@@ -362,7 +363,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
     method halt is Event
     {
-        POE::Kernel->sig_child($self->child_wheel->PID);
         $self->child_wheel->kill();
         $self->clear_alias();
     }
@@ -394,7 +394,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -719,7 +719,7 @@ current processing cycle.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

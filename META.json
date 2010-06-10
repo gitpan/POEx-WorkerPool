@@ -1,0 +1,64 @@
+{
+   "abstract" : "A multiprocess worker pool for the POE framework",
+   "author" : [
+      "Nicholas R. Perez <nperez@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.101582, CPAN::Meta::Converter version 2.101600",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "POEx-WorkerPool",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.31"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Class::MOP" : 0,
+            "Data::UUID" : 0,
+            "Moose" : 0,
+            "Moose::Util::TypeConstraints" : 0,
+            "MooseX::AttributeHelpers" : 0,
+            "MooseX::CompileTime::Traits" : 0,
+            "MooseX::Declare" : 0,
+            "MooseX::Types" : 0,
+            "MooseX::Types::Moose" : 0,
+            "MooseX::Types::Structured" : 0,
+            "POE" : 0,
+            "POE::Filter::Reference" : 0,
+            "POE::Wheel::ReadWrite" : 0,
+            "POE::Wheel::Run" : 0,
+            "POEx::PubSub" : 0,
+            "POEx::Role::SessionInstantiation" : 0,
+            "POEx::Types" : 0,
+            "Sub::Exporter" : 0,
+            "Throwable" : 0,
+            "TryCatch" : 0,
+            "aliased" : 0,
+            "constant" : 0
+         }
+      },
+      "test" : {
+         "requires" : {
+            "FindBin" : 0,
+            "Test::More" : 0
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/nperez/pxwp.git"
+      }
+   },
+   "version" : "1.101610"
+}
+

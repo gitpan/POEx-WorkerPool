@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Types;
 BEGIN {
-  $POEx::WorkerPool::Types::VERSION = '1.101040';
+  $POEx::WorkerPool::Types::VERSION = '1.101610';
 }
 
 use warnings;
@@ -106,7 +106,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -162,7 +162,7 @@ This is a convenience constraint that checks if the object inherits from Error
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,6 +1,6 @@
 package POEx::WorkerPool::WorkerEvents;
 BEGIN {
-  $POEx::WorkerPool::WorkerEvents::VERSION = '1.101040';
+  $POEx::WorkerPool::WorkerEvents::VERSION = '1.101610';
 }
 
 #ABSTRACT: Exported event symbols for WorkerPool
@@ -59,7 +59,7 @@ POEx::WorkerPool::WorkerEvents - Exported event symbols for WorkerPool
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -85,7 +85,7 @@ on signatures required for each event
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

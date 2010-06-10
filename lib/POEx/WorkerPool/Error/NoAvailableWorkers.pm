@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Error::NoAvailableWorkers;
 BEGIN {
-  $POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.101040';
+  $POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.101610';
 }
 
 #ABSTRACT: An error class indicating that no workers are available
@@ -23,7 +23,7 @@ POEx::WorkerPool::Error::NoAvailableWorkers - An error class indicating that no 
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -32,7 +32,7 @@ no workers available (either all are active, or have full job queues)
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

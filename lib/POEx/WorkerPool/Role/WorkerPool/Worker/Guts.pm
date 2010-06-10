@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.101040';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.101610';
 }
 
 #ABSTRACT: A role that provides common semantics for Worker guts
@@ -31,9 +31,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
     # As of POE v1.266 Wheel::ReadWrite does not subclass from POE::Wheel. bleh
     has host => ( is => 'rw', isa => Object );
 
-    has current_job => ( is => 'rw', isa => DoesJob );
-
-
 
     after _start is Event
     {
@@ -55,7 +52,6 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
         try
         {
             $job->init_job();
-            $self->current_job($job);
             $self->yield('send_message', { ID => $job->ID, type => +PXWP_JOB_START, msg => \time() });
             $self->yield('process_job', $job);
             return $job;
@@ -106,7 +102,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
 
     method die_signal(Str $signal, HashRef $stuff) is Event
     {
-        $self->call($self, 'send_message', { ID => $self->current_job->ID, type => +PXWP_WORKER_INTERNAL_ERROR, msg => $stuff });
+        $self->call($self, 'send_message', { ID => 0, type => +PXWP_WORKER_INTERNAL_ERROR, msg => $stuff });
     }
 }
 
@@ -121,7 +117,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 PUBLIC_METHODS
 
@@ -167,7 +163,7 @@ die_signal is our signal handler if something unexpected happens.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

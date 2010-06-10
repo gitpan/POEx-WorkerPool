@@ -1,6 +1,7 @@
 Changes
 LICENSE
 MANIFEST
+META.json
 META.yml
 Makefile.PL
 README
@@ -13,6 +14,7 @@ lib/POEx/WorkerPool/Error/NoAvailableWorkers.pm
 lib/POEx/WorkerPool/Error/StartError.pm
 lib/POEx/WorkerPool/Role/Job.pm
 lib/POEx/WorkerPool/Role/WorkerPool.pm
+lib/POEx/WorkerPool/Role/WorkerPool/OpenEndedWorker.pm
 lib/POEx/WorkerPool/Role/WorkerPool/Worker.pm
 lib/POEx/WorkerPool/Role/WorkerPool/Worker/Guts.pm
 lib/POEx/WorkerPool/Role/WorkerPool/Worker/GutsLoader.pm
@@ -23,8 +25,8 @@ lib/POEx/WorkerPool/Worker/GutsLoader.pm
 lib/POEx/WorkerPool/WorkerEvents.pm
 t/00-load.t
 t/01-basic.t
+t/02-open_ended.t
 t/lib/FailJob.pm
 t/lib/MyJob.pm
-t/release-pod-coverage.t
 t/release-pod-syntax.t
 weaver.ini

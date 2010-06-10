@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.101040';
+  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.101610';
 }
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
@@ -146,7 +146,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -223,7 +223,7 @@ If it is unable to return a suitable worker (all of the workers are currently
 active or all of their job queues are full, etc), it will throw a
 POEx::WorkerPool::Error::NoAvailableWorkers exception.
 
-=head2 queue_job
+=head2 enqueue_job
 
  (DoesJob $job) returns (SessionAlias)
 
@@ -238,7 +238,7 @@ release resouces and clean up.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

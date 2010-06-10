@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Worker;
 BEGIN {
-  $POEx::WorkerPool::Worker::VERSION = '1.101040';
+  $POEx::WorkerPool::Worker::VERSION = '1.101610';
 }
 
 #ABSTRACT: A generic worker class for WorkerPool
@@ -24,7 +24,7 @@ POEx::WorkerPool::Worker - A generic worker class for WorkerPool
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -33,7 +33,7 @@ please see POEx::WorkerPool::Role::WorkerPool::Worker
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,19 +1,19 @@
 ---
 abstract: 'A multiprocess worker pool for the POE framework'
 author:
-  - 'Nicholas Perez <nperez@cpan.org>'
+  - 'Nicholas R. Perez <nperez@cpan.org>'
 build_requires:
   FindBin: 0
   Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.31
-generated_by: 'Dist::Zilla version 2.100922'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.101582, CPAN::Meta::Converter version 2.101600'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: POEx-WorkerPool
-recommends: {}
 requires:
   Class::MOP: 0
   Data::UUID: 0
@@ -39,4 +39,4 @@ requires:
   constant: 0
 resources:
   repository: git://github.com/nperez/pxwp.git
-version: 1.101040
+version: 1.101610

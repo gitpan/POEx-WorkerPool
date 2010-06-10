@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Error::EnqueueError;
 BEGIN {
-  $POEx::WorkerPool::Error::EnqueueError::VERSION = '1.101040';
+  $POEx::WorkerPool::Error::EnqueueError::VERSION = '1.101610';
 }
 
 #ABSTRACT: An error class indicating problems enqueuing a job
@@ -23,7 +23,7 @@ POEx::WorkerPool::Error::EnqueueError - An error class indicating problems enque
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -31,7 +31,7 @@ This exception is thrown when there are issues enqueuing a job for execution.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

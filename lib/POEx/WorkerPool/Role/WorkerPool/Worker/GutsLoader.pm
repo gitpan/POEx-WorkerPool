@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.101040';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.101610';
 }
 
 #ABSTRACT: Implementation role of the Guts loader
@@ -99,7 +99,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader - Implementation role of 
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -175,7 +175,7 @@ executes said coderefs in that order.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

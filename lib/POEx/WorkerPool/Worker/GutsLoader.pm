@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Worker::GutsLoader;
 BEGIN {
-  $POEx::WorkerPool::Worker::GutsLoader::VERSION = '1.101040';
+  $POEx::WorkerPool::Worker::GutsLoader::VERSION = '1.101610';
 }
 
 #ABSTRACT: A Loader implementation for Worker::Guts
@@ -24,7 +24,7 @@ POEx::WorkerPool::Worker::GutsLoader - A Loader implementation for Worker::Guts
 
 =head1 VERSION
 
-version 1.101040
+version 1.101610
 
 =head1 DESCRIPTION
 
@@ -33,7 +33,7 @@ attributes please see POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+  Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
