@@ -1,6 +1,6 @@
 package POEx::WorkerPool::WorkerEvents;
 BEGIN {
-  $POEx::WorkerPool::WorkerEvents::VERSION = '1.101610';
+  $POEx::WorkerPool::WorkerEvents::VERSION = '1.102740';
 }
 
 #ABSTRACT: Exported event symbols for WorkerPool
@@ -10,8 +10,7 @@ use strict;
 
 use Moose;
 
-use constant
-{
+use constant {
     PXWP_WORKER_CHILD_ERROR     => 'PXWP_WORKER_CHILD_ERROR',
     PXWP_WORKER_CHILD_EXIT      => 'PXWP_WORKER_CHILD_EXIT',
     PXWP_JOB_ENQUEUED           => 'PXWP_JOB_ENQUEUED',
@@ -26,8 +25,7 @@ use constant
     PXWP_WORKER_ERROR           => 'PXWP_WORKER_ERROR',
 };
 
-use Sub::Exporter -setup => 
-{ 
+use Sub::Exporter -setup => { 
     exports => 
     [ 
         qw/ 
@@ -59,7 +57,7 @@ POEx::WorkerPool::WorkerEvents - Exported event symbols for WorkerPool
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -85,7 +83,7 @@ on signatures required for each event
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

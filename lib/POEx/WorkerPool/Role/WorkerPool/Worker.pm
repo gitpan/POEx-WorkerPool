@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::VERSION = '1.102740';
 }
 
 #ABSTRACT: A role that provides common semantics for Workers
 
 use MooseX::Declare;
 
-role POEx::WorkerPool::Role::WorkerPool::Worker
-{
+role POEx::WorkerPool::Role::WorkerPool::Worker {
     with 'POEx::Role::SessionInstantiation';
 
     use MooseX::Types;
@@ -70,8 +69,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
         is => 'ro', 
         isa => ArrayRef[DoesJob], 
         default => sub { [] },
-        handles =>
-        {
+        handles => {
             _enqueue_job => 'push',
             _dequeue_job => 'shift',
             count_jobs => 'count',
@@ -83,8 +81,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
 
     has child_wheel => ( is => 'ro', isa => Wheel, lazy_build => 1 );
-    method _build_child_wheel
-    {
+    method _build_child_wheel {
         my $wheel = POE::Wheel::Run->new
         (
             Program => $self->guts_loader->loader,
@@ -102,8 +99,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     method _build_guts_loader { return GutsLoader->new(job_classes => $self->job_classes); }
 
 
-    method guts_error_handler(Str $op, Int $error_num, Str $error_str, WheelID $id, Str $handle_name) is Event
-    {
+    method guts_error_handler(Str $op, Int $error_num, Str $error_str, WheelID $id, Str $handle_name) is Event {
         $self->post
         (
             $self->pubsub_alias, +PXWP_WORKER_CHILD_ERROR,
@@ -119,8 +115,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     }
 
 
-    method guts_exited(Str $chld, Int $pid, Int $exit_val) is Event
-    {
+    method guts_exited(Str $chld, Int $pid, Int $exit_val) is Event {
         $self->post
         (
             $self->pubsub_alias, +PXWP_WORKER_CHILD_EXIT, 
@@ -134,8 +129,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     }
 
 
-    after _start is Event
-    {
+    after _start is Event {
         my $alias = $self->pubsub_alias;
         POEx::PubSub->new(alias => $alias, options => $self->options);
 
@@ -159,24 +153,20 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
         $self->child_wheel();
     }
 
-    after _stop is Event
-    {
+    after _stop is Event {
         $self->call($self->pubsub_alias, 'destroy');
     }
 
 
 
-    method enqueue_job(DoesJob $job) is Event
-    {
+    method enqueue_job(DoesJob $job) is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         
-        if($self->is_active)
-        {
+        if($self->is_active) {
             EnqueueError->throw({message => 'Queue is currently active'});
         }
         
-        if($self->count_jobs != $self->max_jobs)
-        {
+        if($self->count_jobs != $self->max_jobs) {
             $self->_enqueue_job($job);
             
             $kernel->post
@@ -186,21 +176,17 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
                 job => $job,
             );
         }
-        else
-        {
+        else {
             EnqueueError->throw({message => 'Queue is full'});
         }
     }
 
 
-    method enqueue_jobs(ArrayRef[DoesJob] $jobs) is Event
-    {
+    method enqueue_jobs(ArrayRef[DoesJob] $jobs) is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         
-        if(($self->count_jobs + @$jobs) <= $self->max_jobs)
-        {
-            map 
-            {
+        if(($self->count_jobs + @$jobs) <= $self->max_jobs) {
+            map {
                 $self->_enqueue_job($_); 
                 $kernel->post
                 (
@@ -211,19 +197,16 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
             }
             @$jobs;
         }
-        else
-        {
+        else {
             EnqueueError->throw({message => 'Too many jobs'});
         }
     }
 
 
-    method start_processing is Event
-    {
+    method start_processing is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         
-        if($self->count_jobs < 1)
-        {
+        if($self->count_jobs < 1) {
             StartError->throw({message => 'No jobs in queue' });
         }
         
@@ -239,12 +222,10 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     }
 
 
-    method _process_queue is Event
-    {
+    method _process_queue is Event {
         my $job = $self->_dequeue_job();
         
-        if(defined($job))
-        {
+        if(defined($job)) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_DEQUEUED, 
@@ -254,8 +235,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
             
             $self->yield('_process_job', $job);
         }
-        else
-        {
+        else {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_STOP_PROCESSING,
@@ -271,10 +251,8 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     }
 
 
-    method _process_job(DoesJob $job) is Event
-    {
-        if(!defined($self->child_wheel))
-        {
+    method _process_job(DoesJob $job) is Event {
+        if(!defined($self->child_wheel)) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_WORKER_INTERNAL_ERROR, 
@@ -290,10 +268,8 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
     }
 
 
-    method guts_output(JobStatus $job_status, WheelID $id) is Event
-    {
-        if($job_status->{type} eq +PXWP_JOB_COMPLETE)
-        {
+    method guts_output(JobStatus $job_status, WheelID $id) is Event {
+        if($job_status->{type} eq +PXWP_JOB_COMPLETE) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_COMPLETE,
@@ -307,8 +283,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
             $self->yield('_process_queue');
         }
-        elsif($job_status->{type} eq +PXWP_JOB_PROGRESS)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_PROGRESS) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_PROGRESS,
@@ -318,8 +293,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
                 msg => $job_status->{msg},
             );
         }
-        elsif($job_status->{type} eq +PXWP_JOB_FAILED)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_FAILED) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_FAILED,
@@ -333,8 +307,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
             
             $self->yield('_process_queue');
         }
-        elsif($job_status->{type} eq +PXWP_JOB_START)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_START) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_START, 
@@ -342,8 +315,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
                 job => $self->_in_process,
             );
         }
-        elsif($job_status->{type} eq +PXWP_WORKER_INTERNAL_ERROR)
-        {
+        elsif($job_status->{type} eq +PXWP_WORKER_INTERNAL_ERROR) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_WORKER_INTERNAL_ERROR,
@@ -354,22 +326,19 @@ role POEx::WorkerPool::Role::WorkerPool::Worker
 
             $self->halt();
         }
-        else
-        {
+        else {
             JobError->throw({message => 'Unknown job status', job => $self->_in_process, job_status => $job_status});
         }
     }
 
 
-    method halt is Event
-    {
+    method halt is Event {
         $self->child_wheel->kill();
         $self->clear_alias();
     }
 
 
-    method die_signal_handler(Str $sig, HashRef $error) is Event
-    {
+    method die_signal_handler(Str $sig, HashRef $error) is Event {
         $self->poe->kernel->sig_handled();
 
         $self->poe->kernel->post
@@ -394,7 +363,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker - A role that provides common semanti
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -433,8 +402,7 @@ status indicates whether the Worker is currently processing its queue.
 This is the FIFO queue of jobs this worker is responsible for processing.
 
 The following handles are provided:
-
-    {
+ {
         _enqueue_job => 'push',
         _dequeue_job => 'shift',
         count_jobs => 'count',
@@ -719,7 +687,7 @@ current processing cycle.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

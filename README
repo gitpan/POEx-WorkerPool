@@ -1,9 +1,9 @@
 
 
 This archive contains the distribution POEx-WorkerPool,
-version 1.101610:
+version 1.102740:
 
-  A multiprocess worker pool for the POE framework
+  A generic multiprocess worker pool for the POE framework
 
 This software is copyright (c) 2010 by Infinity Interactive.
 

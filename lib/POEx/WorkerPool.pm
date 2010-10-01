@@ -1,14 +1,13 @@
 package POEx::WorkerPool;
 BEGIN {
-  $POEx::WorkerPool::VERSION = '1.101610';
+  $POEx::WorkerPool::VERSION = '1.102740';
 }
 
 #ABSTRACT: A generic multiprocess worker pool for the POE framework
 
 use MooseX::Declare;
 
-class POEx::WorkerPool
-{
+class POEx::WorkerPool {
     with 'MooseX::CompileTime::Traits';
     with 'POEx::WorkerPool::Role::WorkerPool';
 }
@@ -24,18 +23,16 @@ POEx::WorkerPool - A generic multiprocess worker pool for the POE framework
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 SYNOPSIS
 
     use POE;
     use MooseX::Declare;
 
-    class MyJob with POEx::WorkerPool::Role::Job
-    {
+    class MyJob with POEx::WorkerPool::Role::Job {
         # this method is executed across the process boundary
-        method init_job
-        {
+        method init_job {
             # Multi step jobs are supported and even reported on, so just keep 
             # enqueuing steps
 
@@ -49,8 +46,7 @@ version 1.101610
         }
     }
 
-    class NeedsParallelJobExecution
-    {
+    class NeedsParallelJobExecution {
         with 'POEx::Role::SessionInstantiation';
         use aliased 'POEx::Role::Event';
         
@@ -62,10 +58,8 @@ version 1.101610
         has pool => ( is => 'ro', isa => DoesWorkerPool, lazy_build => 1 );
         method _build_pool { POEx::WorkerPool->new() }
 
-        after _start is Event
-        {
-            for(0..4)
-            {
+        after _start is Event {
+            for(0..4) {
                 # we get back the alias of the worker with which our job was 
                 # enqueued
 
@@ -86,8 +80,7 @@ version 1.101610
             }
         }
 
-        method job_complete (SessionID :$worker_id, Str :$job_id, Ref :$msg) is Event
-        {
+        method job_complete (SessionID :$worker_id, Str :$job_id, Ref :$msg) is Event {
             print "Worker($worker_id) finished Job($job_id)\n";
         }
     }
@@ -112,7 +105,7 @@ apply s/POEx::/POEx::WorkerPool::Role::/ to the class names.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Types;
 BEGIN {
-  $POEx::WorkerPool::Types::VERSION = '1.101610';
+  $POEx::WorkerPool::Types::VERSION = '1.102740';
 }
 
 use warnings;
@@ -77,10 +77,8 @@ subtype JobStatus,
         msg => Ref,
         percent_complete => Optional[Maybe[Int]]
     ],
-    where
-    {
-        if($_->{type} eq +PXWP_JOB_PROGRESS)
-        {
+    where {
+        if($_->{type} eq +PXWP_JOB_PROGRESS) {
             return exists($_->{percent_complete}) && defined($_->{percent_complete});
         }
 
@@ -106,7 +104,7 @@ POEx::WorkerPool::Types - Type constraints for POEx::WorkerPool
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -140,8 +138,7 @@ Must be one of the worker events defined in POEx::WorkerPool::WorkerEvents
 
 JobStatus is what a Worker::Guts composed object must return. It consistes of 
 a hash with three keys and potential forth depending on type. See below:
-
-    {
+ {
         type => WorkerEvent,
         ID => Str,
         msg => Ref,
@@ -162,7 +159,7 @@ This is a convenience constraint that checks if the object inherits from Error
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

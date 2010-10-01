@@ -1,4 +1,10 @@
-Revision history for POEx-WorkerPool: 1.101610
+Revision history for POEx-WorkerPool: 1.102740
+
+1.102740  2010-10-01 15:11:39 America/Chicago
+        Remove errant AttributeHelpers use.
+        Replace TryCatch with Try::Tiny to work on newer perls
+        Update dist.ini and weaver.ini to the latest
+        Move braces to work around stupid MXD bug on newer perls
 
 1.101610  2010-06-10 13:43:35 America/Chicago
         Implement the OpenEndedWorker trait for Worker

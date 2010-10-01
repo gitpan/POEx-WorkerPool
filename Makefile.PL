@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.31;
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'A multiprocess worker pool for the POE framework',
+  'ABSTRACT' => 'A generic multiprocess worker pool for the POE framework',
   'AUTHOR' => 'Nicholas R. Perez <nperez@cpan.org>',
   'BUILD_REQUIRES' => {
     'FindBin' => '0',
@@ -27,7 +27,6 @@ my %WriteMakefileArgs = (
     'Data::UUID' => '0',
     'Moose' => '0',
     'Moose::Util::TypeConstraints' => '0',
-    'MooseX::AttributeHelpers' => '0',
     'MooseX::CompileTime::Traits' => '0',
     'MooseX::Declare' => '0',
     'MooseX::Types' => '0',
@@ -42,11 +41,11 @@ my %WriteMakefileArgs = (
     'POEx::Types' => '0',
     'Sub::Exporter' => '0',
     'Throwable' => '0',
-    'TryCatch' => '0',
+    'Try::Tiny' => '0',
     'aliased' => '0',
     'constant' => '0'
   },
-  'VERSION' => '1.101610',
+  'VERSION' => '1.102740',
   'test' => {
     'TESTS' => 't/*.t'
   }

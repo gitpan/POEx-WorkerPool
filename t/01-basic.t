@@ -1,5 +1,4 @@
-BEGIN
-{
+BEGIN {
 #    sub POE::Kernel::CATCH_EXCEPTIONS () { 1 }
 #    sub POE::Kernel::TRACE_EVENTS () { 1 }
 #    sub POE::Kernel::TRACE_FILENAME () { 'test_trace' }
@@ -19,8 +18,7 @@ my $worker_stops = 0;
 my $enqueues = 0;
 my $dequeues = 0;
 
-class MyTester
-{
+class MyTester {
     with 'POEx::Role::SessionInstantiation';
     use aliased 'POEx::Role::Event';
     
@@ -44,8 +42,7 @@ class MyTester
     has found_error => ( is => 'rw', isa => ScalarRef, default => sub { my $i = 1; \$i; } );
 
     has pool => ( is => 'ro', isa => DoesWorkerPool, lazy_build => 1 );
-    method _build_pool
-    {
+    method _build_pool {
         POEx::WorkerPool->new
         (
             max_workers => $good + $bad, 
@@ -55,15 +52,12 @@ class MyTester
         ); 
     }
 
-    after _start is Event
-    {
-        for(1..$good)
-        {
+    after _start is Event {
+        for(1..$good) {
             $self->subscribe_to_worker($self->pool->enqueue_job(MyJob->new()));
         }
 
-        for(1..$bad)
-        {
+        for(1..$bad) {
             $self->subscribe_to_worker($self->pool->enqueue_job(FailJob->new()));
         }
         
@@ -75,8 +69,7 @@ class MyTester
         
     }
 
-    method error_handler(SessionID :$worker_id, IsaError :$exception, HashRef :$original) is Event
-    {
+    method error_handler(SessionID :$worker_id, IsaError :$exception, HashRef :$original) is Event {
         ok($exception->isa(EnqueueError), 'We successfully got the enqueue error exception');
     }
 
@@ -88,8 +81,7 @@ class MyTester
         Str :$error_string,
         WheelID :$wheel_id,
         Str :$handle_name
-    ) is Event
-    {
+    ) is Event {
         fail
         (
             'PXWP_WORKER_CHILD_ERROR: ' . 
@@ -98,23 +90,19 @@ class MyTester
         $self->pool()->halt();
         BAIL_OUT('FAILURE STATE');
     }
-    method bailout_worker_child_exit(SessionID :$worker_id, Int :$process_id, Int :$exit_value) is Event
-    {
+    method bailout_worker_child_exit(SessionID :$worker_id, Int :$process_id, Int :$exit_value) is Event {
         fail('PXWP_WORKER_CHILD_EXIT: ' . "Worker($worker_id)'s process($process_id) has exited with exit_value($exit_value)");
         $self->pool()->halt();
         BAIL_OUT('FAILURE STATE');
     }
-    method bailout_worker_internal is Event
-    {
+    method bailout_worker_internal is Event {
         fail('PXWP_WORKER_INTERNAL_ERROR');
         $self->pool()->halt();
         BAIL_OUT('FAILURE STATE');
     }
 
-    method job_failed (SessionID :$worker_id, DoesJob :$job, Ref :$msg) is Event
-    {
-        if(${$self->found_error} > $bad)
-        {
+    method job_failed (SessionID :$worker_id, DoesJob :$job, Ref :$msg) is Event {
+        if(${$self->found_error} > $bad) {
             fail("Found more than $bad error(s)");
             $self->pool()->halt();
             BAIL_OUT('FAILURE STATE');
@@ -125,8 +113,7 @@ class MyTester
         ${$self->found_error}++;
     }
 
-    method worker_stop_processing (SessionID :$worker_id, Int :$completed_jobs, Int :$failed_jobs) is Event
-    {
+    method worker_stop_processing (SessionID :$worker_id, Int :$completed_jobs, Int :$failed_jobs) is Event {
         $worker_stops++;
         pass("Worker($worker_id) has finished processing its jobs. Complete: $completed_jobs, Failed: $failed_jobs\n");
         diag("Worker($worker_id) has finished processing its jobs. Complete: $completed_jobs, Failed: $failed_jobs\n");
@@ -134,57 +121,49 @@ class MyTester
         my $alias = $self->poe->kernel->ID_id_to_session($worker_id)->pubsub_alias;
         $self->unsubscribe_to_worker($alias);
         
-        if($worker_stops == ($good + $bad))
-        {
+        if($worker_stops == ($good + $bad)) {
             $self->pool->halt();
         }
     }
 
-    method worker_start_processing (SessionID :$worker_id, Int :$count_jobs) is Event
-    {
+    method worker_start_processing (SessionID :$worker_id, Int :$count_jobs) is Event {
         $worker_starts++;
         pass("Worker($worker_id) has started processing its $count_jobs jobs\n");
         diag("Worker($worker_id) has started processing its $count_jobs jobs\n");
     }
     
-    method job_dequeued (SessionID :$worker_id, DoesJob :$job) is Event
-    {
+    method job_dequeued (SessionID :$worker_id, DoesJob :$job) is Event {
         $dequeues++;
         pass("Worker($worker_id) dequeued Job(${\$job->ID})\n");
         diag("Worker($worker_id) dequeued Job(${\$job->ID})\n");
     }
     
-    method job_enqueued (SessionID :$worker_id, DoesJob :$job) is Event
-    {
+    method job_enqueued (SessionID :$worker_id, DoesJob :$job) is Event {
         $enqueues++;
         pass("Worker($worker_id) queued Job(${\$job->ID})\n");
         diag("Worker($worker_id) queued Job(${\$job->ID})\n");
     }
 
-    method job_start (SessionID :$worker_id, DoesJob :$job) is Event
-    {
+    method job_start (SessionID :$worker_id, DoesJob :$job) is Event {
         $starts++;
         pass("Worker($worker_id) has started Job(${\$job->ID})\n");
         diag("Worker($worker_id) has started Job(${\$job->ID})\n");
     }
 
     
-    method job_complete (SessionID :$worker_id, DoesJob :$job, Ref :$msg) is Event
-    {
+    method job_complete (SessionID :$worker_id, DoesJob :$job, Ref :$msg) is Event {
         $completes++;
         pass("Worker($worker_id) finished Job(${\$job->ID})\n");
         diag("Worker($worker_id) finished Job(${\$job->ID})\n");
     }
 
-    method job_progress (SessionID :$worker_id, DoesJob :$job, Int :$percent_complete, Ref :$msg) is Event
-    {
+    method job_progress (SessionID :$worker_id, DoesJob :$job, Int :$percent_complete, Ref :$msg) is Event {
         $progresses++;
         pass("Worker($worker_id) is %$percent_complete with Job(${\$job->ID})");
         diag("Worker($worker_id) is %$percent_complete with Job(${\$job->ID})");
     }
 
-    method subscribe_to_worker(SessionRefIdAliasInstantiation $alias)
-    {
+    method subscribe_to_worker(SessionRefIdAliasInstantiation $alias) {
         $self->call($alias, 'subscribe', event_name => +PXWP_WORKER_CHILD_ERROR, event_handler => 'bailout_worker_child_err');
         $self->call($alias, 'subscribe', event_name => +PXWP_WORKER_CHILD_EXIT, event_handler => 'bailout_worker_child_exit');
         $self->call($alias, 'subscribe', event_name => +PXWP_JOB_ENQUEUED, event_handler => 'job_enqueued');
@@ -198,8 +177,7 @@ class MyTester
         $self->call($alias, 'subscribe', event_name => +PXWP_JOB_START, event_handler => 'job_start');
     }
     
-    method unsubscribe_to_worker(SessionRefIdAliasInstantiation $alias)
-    {
+    method unsubscribe_to_worker(SessionRefIdAliasInstantiation $alias) {
         $self->call($alias, 'cancel', event_name => +PXWP_WORKER_CHILD_ERROR);
         $self->call($alias, 'cancel', event_name => +PXWP_WORKER_CHILD_EXIT);
         $self->call($alias, 'cancel', event_name => +PXWP_JOB_ENQUEUED);

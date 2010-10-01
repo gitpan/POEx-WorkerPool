@@ -1,17 +1,16 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::Guts;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::Guts::VERSION = '1.102740';
 }
 
 #ABSTRACT: A role that provides common semantics for Worker guts
 
 use MooseX::Declare;
 
-role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
-{
+role POEx::WorkerPool::Role::WorkerPool::Worker::Guts {
     with 'POEx::Role::SessionInstantiation';
     
-    use TryCatch;
+    use Try::Tiny;
     
     use POEx::Types(':all');
     use POEx::WorkerPool::Types(':all');
@@ -32,8 +31,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
     has host => ( is => 'rw', isa => Object );
 
 
-    after _start is Event
-    {
+    after _start is Event {
         my $wheel = POE::Wheel::ReadWrite->new
         (   
             'InputHandle'   => \*STDIN,
@@ -47,52 +45,49 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
     }
 
 
-    method init_job(DoesJob $job, WheelID $wheel) is Event
-    {
-        try
-        {
+    method init_job(DoesJob $job, WheelID $wheel) is Event {
+        try {
             $job->init_job();
             $self->yield('send_message', { ID => $job->ID, type => +PXWP_JOB_START, msg => \time() });
             $self->yield('process_job', $job);
             return $job;
         }
-        catch($err)
-        {
+        catch {
+            my $err = $_;
             $self->call($self, 'send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err, } );
         }
     }
 
 
-    method process_job(DoesJob $job) is Event
-    {
-        try
-        {
+    method process_job(DoesJob $job) is Event {
+        try {
             my $status = $job->execute_step();
             die "No Status" if not is_JobStatus($status);
             $self->yield('send_message', $status);
             
-            if($job->count_steps > 0)
-            {
+            if($job->count_steps > 0) {
                 $self->yield('process_job', $job);
             }
 
             return $status;
         }
-        catch(JobError $err)
-        {
-            $self->call($self, 'send_message', $err->job_status);
-        }
-        catch($err)
-        {
-            $self->call($self, 'send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err } );
+        catch {
+            my $err = $_;
+
+            if(is_IsaError($err))
+            {
+                $self->call($self, 'send_message', $err->job_status);
+            }
+            else
+            {
+                $self->call($self, 'send_message', { ID => $job->ID, type => +PXWP_JOB_FAILED, msg => \$err } );
+            }
         }
     }
 
 
-    method send_message(JobStatus $status) is Event
-    {
-        if(!defined($self->host))
-        {
+    method send_message(JobStatus $status) is Event {
+        if(!defined($self->host)) {
             die "Unable to communicate with the host";
         }
 
@@ -100,8 +95,7 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::Guts
     }
 
 
-    method die_signal(Str $signal, HashRef $stuff) is Event
-    {
+    method die_signal(Str $signal, HashRef $stuff) is Event {
         $self->call($self, 'send_message', { ID => 0, type => +PXWP_WORKER_INTERNAL_ERROR, msg => $stuff });
     }
 }
@@ -117,7 +111,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::Guts - A role that provides common s
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 PUBLIC_METHODS
 
@@ -163,7 +157,7 @@ die_signal is our signal handler if something unexpected happens.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

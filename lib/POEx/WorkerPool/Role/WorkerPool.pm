@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Role::WorkerPool;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::WorkerPool::VERSION = '1.102740';
 }
 
 #ABSTRACT: A role that provides common semantics for WorkerPools
 
 use MooseX::Declare;
 
-role POEx::WorkerPool::Role::WorkerPool
-{
+role POEx::WorkerPool::Role::WorkerPool {
     use Moose::Util::TypeConstraints;
     use MooseX::Types::Moose(':all');
     use POEx::WorkerPool::Types(':all');
@@ -43,12 +42,10 @@ role POEx::WorkerPool::Role::WorkerPool
         isa => ArrayRef[DoesWorker],
         lazy_build => 1,
     );
-    method _build_workers
-    {
+    method _build_workers {
         my $workers = [];
 
-        for(0..$self->max_workers)
-        {
+        for(0..$self->max_workers) {
             push
             (
                 @$workers, 
@@ -67,18 +64,15 @@ role POEx::WorkerPool::Role::WorkerPool
 
     has max_jobs_per_worker => ( is => 'ro', isa => Int, default => 5 );
 
-    method BUILDARGS (ClassName $class: @args)
-    {
+    method BUILDARGS (ClassName $class: @args) {
         my %retargs = @args;
         Class::MOP::load_class($_) for @{$retargs{job_classes}};
         return \%retargs;
     }
 
 
-    method incr_worker_index returns (Int)
-    {
-        if(++${$self->current_worker_index} > $self->max_workers - 1)
-        {
+    method incr_worker_index returns (Int) {
+        if(++${$self->current_worker_index} > $self->max_workers - 1) {
             $self->clear_current_worker_index();
         }
         
@@ -86,42 +80,34 @@ role POEx::WorkerPool::Role::WorkerPool
     }
 
 
-    method get_next_worker(Int $index?) returns (DoesWorker)
-    {
+    method get_next_worker(Int $index?) returns (DoesWorker) {
         NoAvailableWorkers->throw({message => 'Iterated through all workers and none are available'}) 
             if defined($index) && $index == ${$self->current_worker_index};
         
-        if($self->queue_type eq 'round_robin')
-        {
+        if($self->queue_type eq 'round_robin') {
             my $worker = $self->workers()->[$self->incr_worker_index];
             
-            if($worker->is_active)
-            {
+            if($worker->is_active) {
                 return $self->get_next_worker( defined($index) ? $index : ${$self->current_worker_index} );
             }
-            else
-            {
+            else {
                 return $worker;
             }
         }
-        elsif($self->queue_type eq 'fill_up')
-        {
+        elsif($self->queue_type eq 'fill_up') {
             my $current = $self->workers()->[${$self->current_worker_index}];
             
-            if($current->count_jobs < $current->max_jobs && $current->is_not_active)
-            {
+            if($current->count_jobs < $current->max_jobs && $current->is_not_active) {
                 return $current;
             }
-            else
-            {
+            else {
                 return $self->get_next_worker( defined($index) ? $index : $self->incr_worker_index );
             }
         }
     }
 
 
-    method enqueue_job(DoesJob $job) returns (SessionAlias)
-    {
+    method enqueue_job(DoesJob $job) returns (SessionAlias) {
         my $worker = $self->get_next_worker();
         $worker->enqueue_job($job);
         $worker->start_processing();
@@ -129,8 +115,7 @@ role POEx::WorkerPool::Role::WorkerPool
     }
 
 
-    method halt 
-    {
+    method halt {
         $_->halt() for (@{$self->workers});
     }
 }
@@ -146,7 +131,7 @@ POEx::WorkerPool::Role::WorkerPool - A role that provides common semantics for W
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -238,7 +223,7 @@ release resouces and clean up.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

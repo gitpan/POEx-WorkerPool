@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Worker;
 BEGIN {
-  $POEx::WorkerPool::Worker::VERSION = '1.101610';
+  $POEx::WorkerPool::Worker::VERSION = '1.102740';
 }
 
 #ABSTRACT: A generic worker class for WorkerPool
 
 use MooseX::Declare;
 
-class POEx::WorkerPool::Worker
-{
+class POEx::WorkerPool::Worker {
     with 'MooseX::CompileTime::Traits';
     with 'POEx::WorkerPool::Role::WorkerPool::Worker';
 }
@@ -24,7 +23,7 @@ POEx::WorkerPool::Worker - A generic worker class for WorkerPool
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -33,7 +32,7 @@ please see POEx::WorkerPool::Role::WorkerPool::Worker
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

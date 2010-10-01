@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Error::JobError;
 BEGIN {
-  $POEx::WorkerPool::Error::JobError::VERSION = '1.101610';
+  $POEx::WorkerPool::Error::JobError::VERSION = '1.102740';
 }
 
 #ABSTRACT: An error class indicating something failed with the job
 
 use MooseX::Declare;
 
-class POEx::WorkerPool::Error::JobError extends POEx::WorkerPool::Error
-{
+class POEx::WorkerPool::Error::JobError extends POEx::WorkerPool::Error {
     use POEx::WorkerPool::Types(':all');
 
 
@@ -29,7 +28,7 @@ POEx::WorkerPool::Error::JobError - An error class indicating something failed w
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -52,7 +51,7 @@ during execution of the previous step
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Error::NoAvailableWorkers;
 BEGIN {
-  $POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.101610';
+  $POEx::WorkerPool::Error::NoAvailableWorkers::VERSION = '1.102740';
 }
 
 #ABSTRACT: An error class indicating that no workers are available
 
 use MooseX::Declare;
 
-class POEx::WorkerPool::Error::NoAvailableWorkers extends POEx::WorkerPool::Error
-{
+class POEx::WorkerPool::Error::NoAvailableWorkers extends POEx::WorkerPool::Error {
 
 }
 
@@ -23,7 +22,7 @@ POEx::WorkerPool::Error::NoAvailableWorkers - An error class indicating that no 
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -32,7 +31,7 @@ no workers available (either all are active, or have full job queues)
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

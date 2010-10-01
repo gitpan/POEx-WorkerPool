@@ -1,17 +1,15 @@
 package POEx::WorkerPool::Role::Job;
 BEGIN {
-  $POEx::WorkerPool::Role::Job::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::Job::VERSION = '1.102740';
 }
 
 #ABSTRACT: Provides a role for common job semantics
 
 use MooseX::Declare;
 
-role POEx::WorkerPool::Role::Job
-{
-    use TryCatch;
+role POEx::WorkerPool::Role::Job {
+    use Try::Tiny;
     use Data::UUID;
-    use MooseX::AttributeHelpers;
     
     use MooseX::Types::Moose(':all');
     use MooseX::Types::Structured(':all');
@@ -33,8 +31,7 @@ role POEx::WorkerPool::Role::Job
         is => 'rw', 
         isa => ArrayRef[JobStep],
         default => sub { [] },
-        handles =>
-        {
+        handles => {
             _enqueue_step => 'push',
             dequeue_step => 'shift',
             count_steps => 'count',
@@ -47,55 +44,45 @@ role POEx::WorkerPool::Role::Job
 
 
 
-    method enqueue_step(JobStep $step)
-    {
+    method enqueue_step(JobStep $step) {
         $self->_enqueue_step($step);
         ${$self->total_steps}++;
     }
     
 
-    method is_multi_step returns (Bool)
-    {
+    method is_multi_step returns (Bool) {
         return (${$self->total_steps} > 1);
     }
 
 
-    method execute_step returns (JobStatus)
-    {
-        if($self->count_steps <= 0)
-        {
+    method execute_step returns (JobStatus) {
+        if($self->count_steps <= 0) {
             return { type => +PXWP_JOB_FAILED, ID => $self->ID, msg => \'Malformed job. No steps' };
         }
         
-        try
-        {
+        try {
             my $step = $self->dequeue_step();
             my $val = $step->[0]->(@{$step->[1]});
 
-            if($self->count_steps > 0)
-            {
-                return
-                {
+            if($self->count_steps > 0) {
+                return {
                     type => +PXWP_JOB_PROGRESS,
                     ID => $self->ID,
                     msg => \$val,
                     percent_complete => int(((${$self->total_steps} - $self->count_steps) / ${$self->total_steps}) * 100),
                 };
             }
-            else
-            {
-                return
-                {
+            else {
+                return {
                     type => +PXWP_JOB_COMPLETE,
                     ID => $self->ID,
                     msg => \$val,
                 };
             }
         }
-        catch ($error)
-        {
-            my $status =
-            {
+        catch {
+            my $error = $_;
+            my $status = {
                 type => +PXWP_JOB_FAILED,
                 ID => $self->ID,
                 msg => \$error
@@ -117,14 +104,12 @@ POEx::WorkerPool::Role::Job - Provides a role for common job semantics
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 SYNOPSIS
 
-    class MyJob with POEx::WorkerPool::Role::Job
-    {
-        method init_job
-        {
+    class MyJob with POEx::WorkerPool::Role::Job {
+        method init_job {
             # Implement job initialization across the process boundary here
         }
     }
@@ -156,8 +141,7 @@ This attribute stores the steps for the job. All jobs must have one step before
 execution or else a JobError exception will be thrown.
 
 The following handles are defined to access the steps of the job:
-
-    {
+ {
         push    => '_enqueue_step',
         shift   => 'dequeue_step',
         count   => 'count_steps',
@@ -196,7 +180,7 @@ exception class is JobError
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

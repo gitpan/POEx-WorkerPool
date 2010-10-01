@@ -1,6 +1,6 @@
 package POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker::VERSION = '1.102740';
 }
 
 #ABSTRACT: A role that provides common semantics for open ended Workers
@@ -8,8 +8,7 @@ BEGIN {
 use MooseX::Declare;
 
 
-role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
-{
+role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker {
     with 'POEx::WorkerPool::Role::WorkerPool::Worker';
 
     use MooseX::Types;
@@ -43,8 +42,7 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
         isa => HashRef[DoesJob], 
         traits => ['Hash'],
         default => sub { +{ } },
-        handles =>
-        {
+        handles => {
             _get_in_process => 'get',
             _add_in_process => 'set',
             _del_in_process => 'delete',
@@ -52,14 +50,12 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
     );
 
 
-    after _start is Event
-    {
+    after _start is Event {
         $self->poe->kernel->delay_add('_process_queue', $self->process_queue_interval);
     }
 
 
-    around enqueue_job(DoesJob $job) is Event
-    {
+    around enqueue_job(DoesJob $job) is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         
         $self->_enqueue_job($job);
@@ -73,12 +69,10 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
     }
 
 
-    around enqueue_jobs(ArrayRef[DoesJob] $jobs) is Event
-    {
+    around enqueue_jobs(ArrayRef[DoesJob] $jobs) is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         
-        map 
-        {
+        map {
             $self->_enqueue_job($_); 
             $kernel->post
             (
@@ -90,16 +84,13 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
         @$jobs;
     }
 
-    around start_processing is Event
-    {
+    around start_processing is Event {
         return;
     }
 
 
-    around _process_queue is Event
-    {   
-        while(my $job = $self->_dequeue_job())
-        {
+    around _process_queue is Event {   
+        while(my $job = $self->_dequeue_job()) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_DEQUEUED, 
@@ -110,17 +101,14 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
             $self->yield('_process_job', $job);
         }
 
-        unless($self->stop_processing)
-        {
+        unless($self->stop_processing) {
             $self->poe->kernel->delay_add('_process_queue', $self->process_queue_interval);
         }
     }
 
 
-    around _process_job(DoesJob $job) is Event
-    {
-        if(!defined($self->child_wheel))
-        {
+    around _process_job(DoesJob $job) is Event {
+        if(!defined($self->child_wheel)) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_WORKER_INTERNAL_ERROR, 
@@ -137,10 +125,8 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
 
 
 
-    around guts_output(JobStatus $job_status, WheelID $id) is Event
-    {
-        if($job_status->{type} eq +PXWP_JOB_COMPLETE)
-        {
+    around guts_output(JobStatus $job_status, WheelID $id) is Event {
+        if($job_status->{type} eq +PXWP_JOB_COMPLETE) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_COMPLETE,
@@ -151,8 +137,7 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
             
             $self->_del_in_process($job_status->{ID});
         }
-        elsif($job_status->{type} eq +PXWP_JOB_PROGRESS)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_PROGRESS) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_PROGRESS,
@@ -162,8 +147,7 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
                 msg => $job_status->{msg},
             );
         }
-        elsif($job_status->{type} eq +PXWP_JOB_FAILED)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_FAILED) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_JOB_FAILED,
@@ -174,8 +158,7 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
             
             $self->_del_in_process($job_status->{ID});
         }
-        elsif($job_status->{type} eq +PXWP_JOB_START)
-        {
+        elsif($job_status->{type} eq +PXWP_JOB_START) {
             $DB::single = 1;
             $self->post
             (
@@ -184,8 +167,7 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
                 job => $self->_get_in_process($job_status->{ID}),
             );
         }
-        elsif($job_status->{type} eq +PXWP_WORKER_INTERNAL_ERROR)
-        {
+        elsif($job_status->{type} eq +PXWP_WORKER_INTERNAL_ERROR) {
             $self->post
             (
                 $self->pubsub_alias, +PXWP_WORKER_INTERNAL_ERROR,
@@ -195,15 +177,13 @@ role POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker
 
             $self->halt();
         }
-        else
-        {
+        else {
             JobError->throw({message => 'Unknown job status', job => $self->_in_process, job_status => $job_status});
         }
     }
 
 
-    around halt is Event
-    {
+    around halt is Event {
         my $kernel = defined($self->poe->kernel) ? $self->poe->kernel : 'POE::Kernel';
         $self->stop_processing(1);
         $kernel->alarm_remove_all();
@@ -222,7 +202,7 @@ POEx::WorkerPool::Role::WorkerPool::OpenEndedWorker - A role that provides commo
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 SYNOPSIS
 
@@ -266,8 +246,7 @@ This is the in process store of jobs for the open ended worker. Jobs are placed
 into this structure prior to being passed to the Guts component
 
 The following handles are provided:
-
-    {
+ {
         _get_in_process => 'get',
         _add_in_process => 'set',
         _del_in_process => 'delete',
@@ -418,7 +397,7 @@ In process jobs can be accessed by ID in the L</_in_process_jobs> attribute.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

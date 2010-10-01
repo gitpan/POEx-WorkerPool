@@ -1,14 +1,13 @@
 package POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader;
 BEGIN {
-  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.101610';
+  $POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader::VERSION = '1.102740';
 }
 
 #ABSTRACT: Implementation role of the Guts loader
 
 use MooseX::Declare;
 
-role POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader
-{
+role POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader {
     use POE;
     use Class::MOP;
     use POEx::WorkerPool::Worker::Guts;
@@ -34,52 +33,42 @@ role POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader
     has loader => ( is => 'ro', isa => CodeRef, lazy_build => 1 );
 
 
-    method _build_init
-    {
+    method _build_init {
         my $classes = $self->job_classes;
-        return sub
-        {
+        return sub {
             Class::MOP::load_class($_) for @$classes;
         };
     }
 
 
-    method _build_preamble
-    {
-        return sub
-        {
+    method _build_preamble {
+        return sub {
             POE::Kernel->stop();
         };
     }
 
 
-    method _build_main
-    {
-        return sub
-        {
+    method _build_main {
+        return sub {
             POEx::WorkerPool::Worker::Guts->new();
         };
     }
 
 
-    method _build_prologue
-    {
-        return sub
-        {
+    method _build_prologue {
+        return sub {
             POE::Kernel->run();
         };
     }
 
 
-    method _build_loader
-    {
+    method _build_loader {
         my $init = $self->init;
         my $preamble = $self->preamble;
         my $main = $self->main;
         my $prologue = $self->prologue;
 
-        return sub
-        {
+        return sub {
             $init->();
             $preamble->();
             $main->();
@@ -99,7 +88,7 @@ POEx::WorkerPool::Role::WorkerPool::Worker::GutsLoader - Implementation role of 
 
 =head1 VERSION
 
-version 1.101610
+version 1.102740
 
 =head1 PUBLIC_ATTRIBUTES
 
@@ -175,7 +164,7 @@ executes said coderefs in that order.
 
 =head1 AUTHOR
 
-  Nicholas R. Perez <nperez@cpan.org>
+Nicholas R. Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
